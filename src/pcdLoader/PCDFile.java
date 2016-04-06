@@ -15,10 +15,6 @@ public class PCDFile {
 	protected int points;
 	protected Mat data;
 
-	public PCDFile() {
-
-	}
-
 	public double getVersion() {
 		return version;
 	}

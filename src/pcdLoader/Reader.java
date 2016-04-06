@@ -5,16 +5,24 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+
 public class Reader {
-	
-	public static PCDFile readFile(String filepath){
+
+	public static PCDFile readFile(String filepath) {
 		PCDFile file = new PCDFile();
+
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		file.data = null;
+		int currentLine = 0;
 
 		try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
 
 			String sCurrentLine;
 			while ((sCurrentLine = br.readLine()) != null) {
-				String[] words = sCurrentLine.split(" ");
+				String[] words = sCurrentLine.trim().split(" ");
 				String firstWord = words[0].toUpperCase();
 				switch (firstWord) {
 				case "#":
@@ -46,9 +54,14 @@ public class Reader {
 				case "POINTS":
 					file.points = Integer.parseInt(words[1]);
 					break;
+				case "DATA":
+					file.data = new Mat(file.points, file.fields.length, CvType.CV_32FC1);
+					break;
 
 				default:
-					// USE THE DATA
+					file.data.put(currentLine, 0, StringArraytoFloatArray(words));
+					currentLine++;
+					if(currentLine%500 == 0)
 					break;
 				}
 			}
@@ -56,7 +69,7 @@ public class Reader {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return file;
 	}
 
@@ -66,7 +79,7 @@ public class Reader {
 			res[i] = Integer.parseInt(array[i]);
 		return res;
 	}
-	
+
 	private static char[] StringArraytoCharArray(String[] array) {
 		char[] res = new char[array.length];
 		for (int i = 0; i < array.length; i++)
@@ -74,8 +87,11 @@ public class Reader {
 		return res;
 	}
 
-	public static void main(String[] args) {
-		PCDFile file = Reader.readFile("res/test.pcd");
+	private static float[] StringArraytoFloatArray(String[] array) {
+		float[] res = new float[array.length];
+		for (int i = 0; i < array.length; i++)
+			res[i] = Float.parseFloat(array[i]);
+		return res;
 	}
 
 }

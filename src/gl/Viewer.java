@@ -4,24 +4,21 @@ import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 
+import org.opencv.core.Mat;
+
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
-import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 
 public class Viewer implements GLEventListener{
 
-	public static void main(String[] args) {
-		GLProfile.initSingleton();
-		
-		GLProfile glp = GLProfile.getDefault();
-		GLCapabilities caps = new GLCapabilities(glp);
-		GLCanvas canvas = new GLCanvas(caps);
-		
+	private Mat pointCloud;
+	
+	public Viewer(GLCanvas canvas, Mat pointCloud) {	
+		this.pointCloud = pointCloud;
 		JFrame frame = new JFrame("JOGL Program");
 		frame.setLayout(new BorderLayout());
 		frame.setSize(800, 800);
@@ -30,8 +27,6 @@ public class Viewer implements GLEventListener{
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		canvas.addGLEventListener(new Viewer());
-
 		FPSAnimator animator = new FPSAnimator(canvas, 60);
 		animator.start();
 	}
@@ -43,14 +38,13 @@ public class Viewer implements GLEventListener{
 	private void render(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-
-		gl.glBegin(GL.GL_TRIANGLES);
-		gl.glColor3f(1, 0, 0);
-		gl.glVertex2f(-1, -1);
-		gl.glColor3f(0, 1, 0);
-		gl.glVertex2f(0, 1);
-		gl.glColor3f(0, 0, 1);
-		gl.glVertex2f(1, -1);
+		gl.glRotatef(2f, 0, 1, 0);
+		
+		gl.glBegin(GL2.GL_POINTS);
+		for (int i = 0; i < pointCloud.rows(); i++) {
+			gl.glColor3d(0, 1, 0);
+			gl.glVertex3d(pointCloud.get(i, 0)[0], pointCloud.get(i, 1)[0], pointCloud.get(i, 2)[0]);
+		}
 		gl.glEnd();
 	}
 	
