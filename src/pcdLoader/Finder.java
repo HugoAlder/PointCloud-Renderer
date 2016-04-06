@@ -8,8 +8,6 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import file.PCDFile;
-
 public class Finder extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -37,7 +35,7 @@ public class Finder extends JFrame {
 
 		if (status == JFileChooser.APPROVE_OPTION) {
 			File f = fc.getSelectedFile();
-			chosenFile = Reader.fileReader(f.getAbsolutePath());
+			chosenFile = Reader.readFile(f.getAbsolutePath());
 		}
 
 		return chosenFile;
