@@ -12,8 +12,7 @@ public class Finder extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	public Finder() {
-
+	public static void setLookAndFeel(){
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
@@ -21,7 +20,7 @@ public class Finder extends JFrame {
 		}
 	}
 
-	public static PCDFile fileFinder() {
+	public static PCDFile findFile() {
 
 		PCDFile chosenFile = null;
 		JFileChooser fc = new JFileChooser();
@@ -41,9 +40,4 @@ public class Finder extends JFrame {
 		return chosenFile;
 	}
 	
-	public static void main(String[] args) {
-		Finder c = new Finder();
-		c.fileFinder();
-	}
-
 }
