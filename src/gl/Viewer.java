@@ -120,11 +120,8 @@ public class Viewer implements GLEventListener {
 		animator.start();
 	}
 
-	private void update() {
-		// Put the changes to do (ex: change the coordonate of a point)
-	}
-
-	private void render(GLAutoDrawable drawable) {
+	@Override
+	public void display(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
 		gl.glClearColor(0f, 0f, 0f, 0f);
 		gl.glPushMatrix();
@@ -143,12 +140,6 @@ public class Viewer implements GLEventListener {
 			gl.glVertex3d(pointCloud.get(i, 0)[0], pointCloud.get(i, 1)[0], pointCloud.get(i, 2)[0]);
 		}
 		gl.glEnd();
-	}
-
-	@Override
-	public void display(GLAutoDrawable drawable) {
-		update();
-		render(drawable);
 	}
 
 	@Override
