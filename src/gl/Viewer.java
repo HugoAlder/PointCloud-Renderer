@@ -44,9 +44,9 @@ public class Viewer implements GLEventListener {
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				if (e.getWheelRotation() == 1)
-					z = 1;
+					z = -0.3f;
 				else
-					z = -1;
+					z = 0.3f;
 			}
 		});
 
@@ -63,6 +63,7 @@ public class Viewer implements GLEventListener {
 
 	private void render(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
+		gl.glClearColor(0f, 0f, 0f, 0f);
 		gl.glPushMatrix();
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
