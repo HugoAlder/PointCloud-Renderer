@@ -1,21 +1,17 @@
 package gl;
 
 import java.awt.BorderLayout;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
-import java.awt.event.KeyListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.awt.event.WindowStateListener;
 
 import javax.swing.JFrame;
 
 import org.opencv.core.Mat;
 
-import com.jogamp.newt.event.KeyAdapter;
-import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -28,7 +24,8 @@ public class Viewer implements GLEventListener {
 
 	private GLU glu;
 	float z = 0;
-
+	float x = 0;
+	float y = 0;
 	private Mat pointCloud;
 
 	public Viewer(GLCanvas canvas, Mat pointCloud) {
@@ -49,6 +46,74 @@ public class Viewer implements GLEventListener {
 					z = 0.3f;
 			}
 		});
+		
+		canvas.addMouseMotionListener(new MouseAdapter() {
+			
+			
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				int tmpX = e.getX();
+				int tmpY = e.getY();
+				
+				
+					x = -(tmpX/100000f);
+					
+				
+				
+				
+				y = (tmpY/100000f);
+				
+			/*	if(e.getX()<tmpX){
+					x = 0.01f;
+				System.out.println("x = 0.01f : " + e.getX());
+				}
+				if(e.getX()>tmpX){
+					x = -0.01f;
+				System.out.println("x = -0.01f : " + e.getX());
+				}
+				
+				if(e.getY()>tmpY){
+					y= 0.01f;
+				System.out.println("y = 0.01f : " + e.getY());
+				}
+				
+				if(e.getY()<tmpY){
+					y = -0.01f;
+				System.out.println("y = -0.01f : " + e.getY());
+				}
+				*/
+			}
+
+		});
+		
+		frame.addKeyListener(new KeyAdapter() {
+			
+			@Override
+			public void keyPressed(java.awt.event.KeyEvent e) {
+			
+				int key = e.getKeyCode();
+				switch(key){
+				case KeyEvent.VK_Z :
+					y = 0.01f;
+					break;
+				case KeyEvent.VK_S :
+					y = -0.01f;
+					break;
+					
+				case KeyEvent.VK_Q :
+					x = -0.01f;
+					break;
+				case KeyEvent.VK_D :
+					x = 0.01f;
+					break;
+					
+					
+				}
+			}
+			
+		});
+			
+		
 
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -67,8 +132,11 @@ public class Viewer implements GLEventListener {
 		gl.glPushMatrix();
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
-		gl.glTranslatef(0, 0, z);
+		//gl.glTranslatef(0, 0, z);
+		gl.glTranslatef(x, y, z);
 		z = 0;
+		x = 0;
+		y = 0;
 
 		// gl.glRotatef(2f, 0, 1, 0);
 
