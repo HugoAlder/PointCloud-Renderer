@@ -171,7 +171,7 @@ public class Viewer implements GLEventListener {
 
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
-		float aspect = width / height;
+		float aspect = (float) width / (float) height;
 		glu.gluPerspective(3.0, aspect, 1.0, 300.0);
 
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
