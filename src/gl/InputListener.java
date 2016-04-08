@@ -11,6 +11,8 @@ import java.awt.event.MouseWheelListener;
 
 import javax.swing.SwingUtilities;
 
+import Screen.ScreenShot;
+
 public class InputListener implements MouseWheelListener, MouseMotionListener, MouseListener, KeyListener {
 
 	private float zTranslation = 0.0f;
@@ -19,6 +21,8 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 	private float xRotation = 0.0f;
 	private float yRotation = 0.0f;
 	private Point mousePreviousPosition;
+
+	private ScreenShot screen = new ScreenShot();
 
 	public void resetValues() {
 		zTranslation = 0.0f;
@@ -168,6 +172,9 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 		case KeyEvent.VK_RIGHT:
 			yRotation = 0.05f;
 			break;
+			
+		case KeyEvent.VK_F1:
+			screen.saveScreenshot();
 		}
 	}
 
