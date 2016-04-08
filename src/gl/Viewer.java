@@ -17,29 +17,32 @@ import com.jogamp.opengl.util.FPSAnimator;
 
 import pcdLoader.PCDFile;
 
-public class Viewer implements GLEventListener {
+@SuppressWarnings("serial")
+public class Viewer extends JFrame implements GLEventListener {
 
 	private GLU glu;
 	private InputListener input = new InputListener();
 
 	private PCDFile file;
 	private Mat pointCloud;
+	private static Color forcedColor = null;
 
 	public Viewer(GLCanvas canvas, PCDFile file) {
+		super("JOGL Program");
 		this.file = file;
 		pointCloud = file.getData();
-		JFrame frame = new JFrame("JOGL Program");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(new BorderLayout());
-		frame.setSize(800, 800);
-		frame.add(canvas);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLayout(new BorderLayout());
+		setSize(800, 800);
+		setLocationRelativeTo(null);
+		add(canvas);
 
 		canvas.addMouseWheelListener(input);
 		canvas.addMouseMotionListener(input);
 		canvas.addMouseListener(input);
 		canvas.addKeyListener(input);
 
-		frame.setVisible(true);
+		this.setVisible(true);
 
 		FPSAnimator animator = new FPSAnimator(canvas, 60);
 		animator.start();
@@ -49,28 +52,29 @@ public class Viewer implements GLEventListener {
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
-		gl.glClearColor(1f, 1f, 1f, 0f);
+		gl.glClearColor(0f, 0f, 0f, 0f);
 		gl.glPushMatrix();
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
 		gl.glPointSize(1.5f);
 		gl.glBegin(GL2.GL_POINTS);
 		for (int i = 0; i < pointCloud.rows(); i++) {
-			gl.glColor3d(0, 1, 0);	
-			
-			if(file.isColored()) {	
-				float rgb = (float) pointCloud.get(i, pointCloud.cols() - 1)[0];
-				int rgb2 = Float.floatToIntBits(rgb);
-				Color c = new Color(rgb2);
-				int r = c.getRed();
-				int g = c.getGreen();
-				int b = c.getBlue();
-				byte r2 = (byte) r;
-				byte g2 = (byte) g;
-				byte b2 = (byte) b;
-				gl.glColor3ub(r2, g2, b2);			
+
+			if (forcedColor == null) {
+
+				gl.glColor3d(0, 1, 0);
+
+				if (file.isColored()) {
+					float rgb = (float) pointCloud.get(i, pointCloud.cols() - 1)[0];
+					int rgb2 = Float.floatToIntBits(rgb);
+					byte[] colors = colorReader(new Color(rgb2));
+					gl.glColor3ub(colors[0], colors[1], colors[2]);
+				}
+			} else {
+				byte[] colors = colorReader(forcedColor);
+				gl.glColor3ub(colors[0], colors[1], colors[2]);
 			}
-			
+
 			gl.glVertex3d(pointCloud.get(i, 0)[0], pointCloud.get(i, 1)[0], pointCloud.get(i, 2)[0]);
 		}
 		gl.glEnd();
@@ -105,4 +109,22 @@ public class Viewer implements GLEventListener {
 		glu.gluLookAt(0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 	}
 
+	public byte[] colorReader(Color c) {
+		byte[] out = new byte[3];
+		int r = c.getRed();
+		int g = c.getGreen();
+		int b = c.getBlue();
+		out[0] = (byte) r;
+		out[1] = (byte) g;
+		out[2] = (byte) b;
+		return out;
+	}
+
+	public static void forceColor(Color c) {
+		forcedColor = c;
+	}
+
+	public static void resetColor() {
+		forcedColor = null;
+	}
 }

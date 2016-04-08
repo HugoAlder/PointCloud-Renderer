@@ -11,6 +11,8 @@ import java.awt.event.MouseWheelListener;
 
 import javax.swing.SwingUtilities;
 
+import options.Options;
+
 public class InputListener implements MouseWheelListener, MouseMotionListener, MouseListener, KeyListener {
 
 	private float zTranslation = 0.0f;
@@ -114,22 +116,22 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		
+
 	}
 
 	/*
@@ -167,6 +169,13 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 			break;
 		case KeyEvent.VK_RIGHT:
 			yRotation = 0.05f;
+			break;
+
+		case KeyEvent.VK_F2:
+			new Options();
+			break;
+		case KeyEvent.VK_F3:
+			Viewer.resetColor();
 			break;
 		}
 	}

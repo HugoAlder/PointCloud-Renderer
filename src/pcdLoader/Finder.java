@@ -8,9 +8,8 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+@SuppressWarnings("serial")
 public class Finder extends JFrame {
-
-	private static final long serialVersionUID = 1L;
 
 	public static void setLookAndFeel(){
 		try {
