@@ -1,16 +1,8 @@
 package gl;
 
 import java.awt.BorderLayout;
-import java.awt.Point;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
 import org.opencv.core.Mat;
 
@@ -25,16 +17,9 @@ import com.jogamp.opengl.util.FPSAnimator;
 public class Viewer implements GLEventListener {
 
 	private GLU glu;
-	private float zTranslation = 0;
-	private float xTranslation = 0;
-	private float yTranslation = 0;
-	private float xRotation = 0;
-	private float yRotation = 0;
-	private float zRotation = 0;
-	private Point mousePreviousPosition;
-	private Mat pointCloud;
+	private InputListener input = new InputListener();
 
-	private boolean isMouseClicked = false;
+	private Mat pointCloud;
 
 	public Viewer(GLCanvas canvas, Mat pointCloud) {
 		this.pointCloud = pointCloud;
@@ -44,104 +29,10 @@ public class Viewer implements GLEventListener {
 
 		frame.add(canvas);
 
-		canvas.addMouseWheelListener(new MouseWheelListener() {
-
-			@Override
-			public void mouseWheelMoved(MouseWheelEvent e) {
-				zTranslation = -0.3f * e.getWheelRotation();
-			}
-		});
-
-		canvas.addMouseMotionListener(new MouseAdapter() {
-
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				float speed = 0.005f;
-
-				int currentX = e.getX();
-				int currentY = e.getY();
-
-				int diffX = (int) Math.abs(mousePreviousPosition.getX() - currentX);
-				int diffY = (int) Math.abs(mousePreviousPosition.getY() - currentY);
-
-				if (SwingUtilities.isLeftMouseButton(e)) {
-					if (currentX < mousePreviousPosition.getX())
-						xTranslation = -speed * diffX / 10.0f;
-					else if (currentX > mousePreviousPosition.getX())
-						xTranslation = speed * diffX / 10.0f;
-					if (currentY < mousePreviousPosition.getY())
-						yTranslation = speed * diffY / 10.0f;
-					else if (currentY > mousePreviousPosition.getY())
-						yTranslation = -speed * diffY / 10.0f;
-				} else if (SwingUtilities.isRightMouseButton(e)) {
-					if (currentX < mousePreviousPosition.getX())
-						yRotation = -speed * diffX * 10;
-					else if (currentX > mousePreviousPosition.getX())
-						yRotation = speed * diffX * 10;
-					if (currentY < mousePreviousPosition.getY())
-						xRotation = speed * diffY * 10;
-					else if (currentY > mousePreviousPosition.getY())
-						xRotation = -speed * diffY * 10;
-				}
-
-				mousePreviousPosition = new Point(currentX, currentY);
-			}
-
-		});
-
-		canvas.addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				mousePreviousPosition = new Point(e.getX(), e.getY());
-				isMouseClicked = true;
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				isMouseClicked = false;
-			}
-
-		});
-
-		canvas.addKeyListener(new KeyAdapter() {
-
-			@Override
-			public void keyPressed(java.awt.event.KeyEvent e) {
-
-				int key = e.getKeyCode();
-				switch (key) {
-				case KeyEvent.VK_Z:
-				case KeyEvent.VK_W:
-					yTranslation = 0.01f;
-					break;
-				case KeyEvent.VK_S:
-					yTranslation = -0.01f;
-					break;
-				case KeyEvent.VK_Q:
-				case KeyEvent.VK_A:
-					xTranslation = -0.01f;
-					break;
-				case KeyEvent.VK_D:
-					xTranslation = 0.01f;
-					break;
-
-				case KeyEvent.VK_UP:
-					xRotation = -0.05f;
-					break;
-				case KeyEvent.VK_DOWN:
-					xRotation = 0.05f;
-					break;
-				case KeyEvent.VK_LEFT:
-					yRotation = -0.05f;
-					break;
-				case KeyEvent.VK_RIGHT:
-					yRotation = 0.05f;
-					break;
-				}
-			}
-
-		});
+		canvas.addMouseWheelListener(input);
+		canvas.addMouseMotionListener(input);
+		canvas.addMouseListener(input);
+		canvas.addKeyListener(input);
 
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -165,27 +56,20 @@ public class Viewer implements GLEventListener {
 		}
 		gl.glEnd();
 
-		gl.glRotatef(1, xRotation, yRotation, zRotation);
-		xRotation = 0;
-		yRotation = 0;
-		zRotation = 0;
-
-		gl.glTranslatef(xTranslation, yTranslation, zTranslation);
-		zTranslation = 0;
-		xTranslation = 0;
-		yTranslation = 0;
+		gl.glRotatef(1, input.getxRotation(), input.getyRotation(), 0.0f);
+		gl.glTranslatef(input.getxTranslation(), input.getyTranslation(), input.getzTranslation());
+		input.resetValues();
 
 	}
 
 	@Override
 	public void dispose(GLAutoDrawable drawable) {
-		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		glu = new GLU();
-
 	}
 
 	@Override
