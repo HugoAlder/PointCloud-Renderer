@@ -74,7 +74,14 @@ public class Viewer implements GLEventListener {
 					else if (currentY > mousePreviousPosition.getY())
 						yTranslation = -speed * diffY / 10.0f;
 				} else if (SwingUtilities.isRightMouseButton(e)) {
-
+					if (currentX < mousePreviousPosition.getX())
+						yRotation = -speed * diffX * 10;
+					else if (currentX > mousePreviousPosition.getX())
+						yRotation = speed * diffX * 10;
+					if (currentY < mousePreviousPosition.getY())
+						xRotation = speed * diffY * 10;
+					else if (currentY > mousePreviousPosition.getY())
+						xRotation = -speed * diffY * 10;
 				}
 
 				mousePreviousPosition = new Point(currentX, currentY);
@@ -118,6 +125,19 @@ public class Viewer implements GLEventListener {
 				case KeyEvent.VK_D:
 					xTranslation = 0.01f;
 					break;
+
+				case KeyEvent.VK_UP:
+					xRotation = -0.05f;
+					break;
+				case KeyEvent.VK_DOWN:
+					xRotation = 0.05f;
+					break;
+				case KeyEvent.VK_LEFT:
+					yRotation = -0.05f;
+					break;
+				case KeyEvent.VK_RIGHT:
+					yRotation = 0.05f;
+					break;
 				}
 			}
 
@@ -160,7 +180,6 @@ public class Viewer implements GLEventListener {
 	@Override
 	public void dispose(GLAutoDrawable drawable) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
