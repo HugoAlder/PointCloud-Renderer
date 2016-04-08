@@ -10,6 +10,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import org.opencv.core.Mat;
 
@@ -27,8 +28,13 @@ public class Viewer implements GLEventListener {
 	private float zTranslation = 0;
 	private float xTranslation = 0;
 	private float yTranslation = 0;
+	private float xRotation = 0;
+	private float yRotation = 0;
+	private float zRotation = 0;
 	private Point mousePreviousPosition;
 	private Mat pointCloud;
+
+	private boolean isMouseClicked = false;
 
 	public Viewer(GLCanvas canvas, Mat pointCloud) {
 		this.pointCloud = pointCloud;
@@ -38,14 +44,11 @@ public class Viewer implements GLEventListener {
 
 		frame.add(canvas);
 
-		frame.addMouseWheelListener(new MouseWheelListener() {
+		canvas.addMouseWheelListener(new MouseWheelListener() {
 
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent e) {
-				if (e.getWheelRotation() == 1)
-					zTranslation = -0.3f;
-				else
-					zTranslation = 0.3f;
+				zTranslation = -0.3f * e.getWheelRotation();
 			}
 		});
 
@@ -61,16 +64,17 @@ public class Viewer implements GLEventListener {
 				int diffX = (int) Math.abs(mousePreviousPosition.getX() - currentX);
 				int diffY = (int) Math.abs(mousePreviousPosition.getY() - currentY);
 
-				if (currentX < mousePreviousPosition.getX()) {
-					xTranslation = -speed * diffX / 10.0f;
-				} else if (currentX > mousePreviousPosition.getX()) {
-					xTranslation = speed * diffX / 10.0f;
-				}
+				if (SwingUtilities.isLeftMouseButton(e)) {
+					if (currentX < mousePreviousPosition.getX())
+						xTranslation = -speed * diffX / 10.0f;
+					else if (currentX > mousePreviousPosition.getX())
+						xTranslation = speed * diffX / 10.0f;
+					if (currentY < mousePreviousPosition.getY())
+						yTranslation = speed * diffY / 10.0f;
+					else if (currentY > mousePreviousPosition.getY())
+						yTranslation = -speed * diffY / 10.0f;
+				} else if (SwingUtilities.isRightMouseButton(e)) {
 
-				if (currentY < mousePreviousPosition.getY()) {
-					yTranslation = speed * diffY / 10.0f;
-				} else if (currentY > mousePreviousPosition.getY()) {
-					yTranslation = -speed * diffY / 10.0f;
 				}
 
 				mousePreviousPosition = new Point(currentX, currentY);
@@ -83,11 +87,17 @@ public class Viewer implements GLEventListener {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				mousePreviousPosition = new Point(e.getX(), e.getY());
+				isMouseClicked = true;
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				isMouseClicked = false;
 			}
 
 		});
 
-		frame.addKeyListener(new KeyAdapter() {
+		canvas.addKeyListener(new KeyAdapter() {
 
 			@Override
 			public void keyPressed(java.awt.event.KeyEvent e) {
@@ -95,19 +105,19 @@ public class Viewer implements GLEventListener {
 				int key = e.getKeyCode();
 				switch (key) {
 				case KeyEvent.VK_Z:
+				case KeyEvent.VK_W:
 					yTranslation = 0.01f;
 					break;
 				case KeyEvent.VK_S:
 					yTranslation = -0.01f;
 					break;
-
 				case KeyEvent.VK_Q:
+				case KeyEvent.VK_A:
 					xTranslation = -0.01f;
 					break;
 				case KeyEvent.VK_D:
 					xTranslation = 0.01f;
 					break;
-
 				}
 			}
 
@@ -127,19 +137,24 @@ public class Viewer implements GLEventListener {
 		gl.glPushMatrix();
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
-		gl.glTranslatef(xTranslation, yTranslation, zTranslation);
-		zTranslation = 0;
-		xTranslation = 0;
-		yTranslation = 0;
-
-		// gl.glRotatef(2f, 0, 1, 0);
-
+		gl.glPointSize(1.5f);
 		gl.glBegin(GL2.GL_POINTS);
 		for (int i = 0; i < pointCloud.rows(); i++) {
 			gl.glColor3d(0, 1, 0);
 			gl.glVertex3d(pointCloud.get(i, 0)[0], pointCloud.get(i, 1)[0], pointCloud.get(i, 2)[0]);
 		}
 		gl.glEnd();
+
+		gl.glRotatef(1, xRotation, yRotation, zRotation);
+		xRotation = 0;
+		yRotation = 0;
+		zRotation = 0;
+
+		gl.glTranslatef(xTranslation, yTranslation, zTranslation);
+		zTranslation = 0;
+		xTranslation = 0;
+		yTranslation = 0;
+
 	}
 
 	@Override
@@ -151,6 +166,7 @@ public class Viewer implements GLEventListener {
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		glu = new GLU();
+
 	}
 
 	@Override
