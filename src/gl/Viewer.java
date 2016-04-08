@@ -24,9 +24,9 @@ public class Viewer implements GLEventListener {
 	public Viewer(GLCanvas canvas, Mat pointCloud) {
 		this.pointCloud = pointCloud;
 		JFrame frame = new JFrame("JOGL Program");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
 		frame.setSize(800, 800);
-
 		frame.add(canvas);
 
 		canvas.addMouseWheelListener(input);
@@ -35,10 +35,10 @@ public class Viewer implements GLEventListener {
 		canvas.addKeyListener(input);
 
 		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		FPSAnimator animator = new FPSAnimator(canvas, 60);
 		animator.start();
+		canvas.requestFocus();
 	}
 
 	@Override
@@ -56,8 +56,8 @@ public class Viewer implements GLEventListener {
 		}
 		gl.glEnd();
 
-		gl.glRotatef(1, input.getxRotation(), input.getyRotation(), 0.0f);
 		gl.glTranslatef(input.getxTranslation(), input.getyTranslation(), input.getzTranslation());
+		// gl.glRotatef(1, input.getxRotation(), input.getyRotation(), 0.0f);
 		input.resetValues();
 
 	}
