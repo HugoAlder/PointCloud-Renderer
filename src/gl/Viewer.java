@@ -1,6 +1,7 @@
 package gl;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 
 import javax.swing.JFrame;
 
@@ -14,15 +15,19 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.FPSAnimator;
 
+import pcdLoader.PCDFile;
+
 public class Viewer implements GLEventListener {
 
 	private GLU glu;
 	private InputListener input = new InputListener();
 
+	private PCDFile file;
 	private Mat pointCloud;
 
-	public Viewer(GLCanvas canvas, Mat pointCloud) {
-		this.pointCloud = pointCloud;
+	public Viewer(GLCanvas canvas, PCDFile file) {
+		this.file = file;
+		pointCloud = file.getData();
 		JFrame frame = new JFrame("JOGL Program");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
@@ -44,14 +49,28 @@ public class Viewer implements GLEventListener {
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
-		gl.glClearColor(0f, 0f, 0f, 0f);
+		gl.glClearColor(1f, 1f, 1f, 0f);
 		gl.glPushMatrix();
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
 		gl.glPointSize(1.5f);
 		gl.glBegin(GL2.GL_POINTS);
 		for (int i = 0; i < pointCloud.rows(); i++) {
-			gl.glColor3d(0, 1, 0);
+			gl.glColor3d(0, 1, 0);	
+			
+			if(file.isColored()) {	
+				float rgb = (float) pointCloud.get(i, pointCloud.cols() - 1)[0];
+				int rgb2 = Float.floatToIntBits(rgb);
+				Color c = new Color(rgb2);
+				int r = c.getRed();
+				int g = c.getGreen();
+				int b = c.getBlue();
+				byte r2 = (byte) r;
+				byte g2 = (byte) g;
+				byte b2 = (byte) b;
+				gl.glColor3ub(r2, g2, b2);			
+			}
+			
 			gl.glVertex3d(pointCloud.get(i, 0)[0], pointCloud.get(i, 1)[0], pointCloud.get(i, 2)[0]);
 		}
 		gl.glEnd();

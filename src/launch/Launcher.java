@@ -20,7 +20,7 @@ public class Launcher {
 		GLProfile glp = GLProfile.getDefault();
 		GLCapabilities caps = new GLCapabilities(glp);
 		GLCanvas canvas = new GLCanvas(caps);
-		canvas.addGLEventListener(new Viewer(canvas, file.getData()));
+		canvas.addGLEventListener(new Viewer(canvas, file));
 	}
 	
 }

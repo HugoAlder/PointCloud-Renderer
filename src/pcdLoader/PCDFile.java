@@ -6,6 +6,7 @@ public class PCDFile {
 
 	protected double version;
 	protected String[] fields;
+	protected boolean colored;
 	protected int[] size;
 	protected char[] type;
 	protected int[] count;
@@ -21,6 +22,10 @@ public class PCDFile {
 
 	public String[] getFields() {
 		return fields;
+	}
+	
+	public boolean isColored() {
+		return colored;
 	}
 
 	public int[] getSize() {

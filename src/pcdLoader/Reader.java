@@ -32,6 +32,7 @@ public class Reader {
 					break;
 				case "FIELDS":
 					file.fields = Arrays.copyOfRange(words, 1, words.length);
+					file.colored = file.fields[file.fields.length-1].equals("rgb");
 					break;
 				case "SIZE":
 					file.size = StringArraytoIntArray(Arrays.copyOfRange(words, 1, words.length));
