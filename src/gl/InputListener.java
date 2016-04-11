@@ -13,6 +13,7 @@ import java.awt.event.MouseWheelListener;
 import javax.swing.SwingUtilities;
 
 import Screen.ScreenShot;
+import options.Options;
 
 public class InputListener implements MouseWheelListener, MouseMotionListener, MouseListener, KeyListener {
 
@@ -22,9 +23,13 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 	private float xRotation = 0.0f;
 	private float yRotation = 0.0f;
 	private Point mousePreviousPosition;
+	private Viewer v;
 
 	private ScreenShot screen = new ScreenShot();
 
+	public InputListener(Viewer v){
+		this.v = v;		
+	}
 	public void resetValues() {
 		zTranslation = 0.0f;
 		xTranslation = 0.0f;
@@ -175,13 +180,27 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 			break;
 
 		case KeyEvent.VK_F1:
+
 			try {
 
-				screen.registerScreenShot();
+				screen.registerScreenShot(v);
 			} catch (AWTException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+
+
+			
+			break;
+		case KeyEvent.VK_F2:
+			new Options();
+			break;
+		case KeyEvent.VK_F3:
+			Viewer.resetColor();
+			break;
+		case KeyEvent.VK_F4:
+			Viewer.switchBackgroundColor();
+			break;
 
 		}
 	}

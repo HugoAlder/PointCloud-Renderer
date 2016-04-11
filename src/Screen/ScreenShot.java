@@ -12,6 +12,7 @@ import java.util.Date;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
@@ -37,11 +38,11 @@ public class ScreenShot {
 		return image;
 	}
 
-	public void registerScreenShot() throws AWTException {
+	public void registerScreenShot(JFrame frame) throws AWTException {
 		File outputfile = getNextScreenFile();
 
 		Robot bot = new Robot();
-		JRootPane rootPane = Viewer.frame.getRootPane();
+		JRootPane rootPane = frame.getRootPane();
 		Rectangle bounds = new Rectangle(rootPane.getSize());
 		bounds.setLocation(rootPane.getLocationOnScreen());
 		BufferedImage img = bot.createScreenCapture(bounds);
