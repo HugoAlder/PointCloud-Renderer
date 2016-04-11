@@ -180,6 +180,9 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 		case KeyEvent.VK_F3:
 			Viewer.resetColor();
 			break;
+		case KeyEvent.VK_F11:
+			
+			break;
 		}
 	}
 

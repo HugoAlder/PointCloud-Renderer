@@ -79,7 +79,7 @@ public class Viewer extends JFrame implements GLEventListener {
 				gl.glColor3ub(colors[0], colors[1], colors[2]);
 			}
 
-			gl.glVertex3d(pointCloud.get(i, 0)[0], pointCloud.get(i, 1)[0], pointCloud.get(i, 2)[0]);
+			gl.glVertex3d(pointCloud.get(i, 0)[0], pointCloud.get(i, 1)[0], pointCloud.get(i, 2)[0]);	
 		}
 		gl.glEnd();
 
@@ -135,4 +135,5 @@ public class Viewer extends JFrame implements GLEventListener {
 	public static void switchBackgroundColor() {
 		whiteBackground = !whiteBackground;
 	}
+	
 }
