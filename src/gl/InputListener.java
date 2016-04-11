@@ -171,6 +171,9 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 			yRotation = 0.05f;
 			break;
 
+		case KeyEvent.VK_F1:
+			Viewer.switchBackgroundColor();
+			break;
 		case KeyEvent.VK_F2:
 			new Options();
 			break;

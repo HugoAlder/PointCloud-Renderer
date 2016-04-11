@@ -25,6 +25,7 @@ public class Viewer extends JFrame implements GLEventListener {
 
 	private PCDFile file;
 	private Mat pointCloud;
+	private static boolean whiteBackground = false;
 	private static Color forcedColor = null;
 
 	public Viewer(GLCanvas canvas, PCDFile file) {
@@ -52,7 +53,10 @@ public class Viewer extends JFrame implements GLEventListener {
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
-		gl.glClearColor(0f, 0f, 0f, 0f);
+		if (!whiteBackground)
+			gl.glClearColor(0f, 0f, 0f, 0f);
+		else
+			gl.glClearColor(1f, 1f, 1f, 0f);
 		gl.glPushMatrix();
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
@@ -126,5 +130,9 @@ public class Viewer extends JFrame implements GLEventListener {
 
 	public static void resetColor() {
 		forcedColor = null;
+	}
+	
+	public static void switchBackgroundColor() {
+		whiteBackground = !whiteBackground;
 	}
 }
