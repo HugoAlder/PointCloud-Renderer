@@ -2,16 +2,8 @@ package gl;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 import org.opencv.core.Mat;
 
@@ -35,10 +27,9 @@ public class Viewer implements GLEventListener {
 
 	public static JFrame frame;
 	public static int WIDTH = 800;
-	public static int HEIGHT = 800;
-	public static GL2 GLD;
-	
-	
+	public static int HEIGHT = 400;
+	public static GL2 gl;
+
 	public Viewer(GLCanvas canvas, PCDFile file) {
 		this.file = file;
 		pointCloud = file.getData();
@@ -58,15 +49,16 @@ public class Viewer implements GLEventListener {
 		FPSAnimator animator = new FPSAnimator(canvas, 60);
 		animator.start();
 		canvas.requestFocus();
+
 	}
 
 	@Override
 	public void display(GLAutoDrawable drawable) {
-		GL2 gl = drawable.getGL().getGL2();
+		gl = drawable.getGL().getGL2();
 		gl.glClearColor(1f, 1f, 1f, 0f);
 		gl.glPushMatrix();
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-	
+
 		gl.glPointSize(1.5f);
 		gl.glBegin(GL2.GL_POINTS);
 		for (int i = 0; i < pointCloud.rows(); i++) {
@@ -87,7 +79,6 @@ public class Viewer implements GLEventListener {
 
 			gl.glVertex3d(pointCloud.get(i, 0)[0], pointCloud.get(i, 1)[0], pointCloud.get(i, 2)[0]);
 		}
-		GLD = gl;
 		gl.glEnd();
 
 		gl.glTranslatef(input.getxTranslation(), input.getyTranslation(), input.getzTranslation());

@@ -1,5 +1,6 @@
 package gl;
 
+import java.awt.AWTException;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -118,22 +119,22 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		
+
 	}
 
 	/*
@@ -172,9 +173,16 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 		case KeyEvent.VK_RIGHT:
 			yRotation = 0.05f;
 			break;
-			
+
 		case KeyEvent.VK_F1:
-			screen.saveScreenshot();
+			try {
+
+				screen.registerScreenShot();
+			} catch (AWTException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
 		}
 	}
 
