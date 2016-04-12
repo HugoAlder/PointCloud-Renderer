@@ -61,7 +61,6 @@ public class Viewer extends JFrame implements GLEventListener {
 	public void display(GLAutoDrawable drawable) {
 
 		gl = drawable.getGL().getGL2();
-		gl.glClearColor(1f, 1f, 1f, 0f);
 
 		if (!whiteBackground)
 			gl.glClearColor(0f, 0f, 0f, 0f);
@@ -71,6 +70,11 @@ public class Viewer extends JFrame implements GLEventListener {
 		gl.glPushMatrix();
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
+		gl.glTranslatef(input.getxTranslation(), input.getyTranslation(), input.getzTranslation());
+		
+		gl.glRotatef(input.getxRotation(), 1.0f, 0.0f, 0.0f);
+		gl.glRotatef(input.getyRotation(), 0.0f, 1.0f, 0.0f);
+		
 		gl.glPointSize(1.5f);
 		gl.glBegin(GL2.GL_POINTS);
 		for (int i = 0; i < pointCloud.rows(); i++) {
@@ -93,8 +97,6 @@ public class Viewer extends JFrame implements GLEventListener {
 		}
 		gl.glEnd();
 
-		gl.glTranslatef(input.getxTranslation(), input.getyTranslation(), input.getzTranslation());
-		// gl.glRotatef(1, input.getxRotation(), input.getyRotation(), 0.0f);
 		input.resetValues();
 
 	}
