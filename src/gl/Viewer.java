@@ -30,7 +30,7 @@ public class Viewer extends JFrame implements GLEventListener {
 
 	public static JFrame frame;
 	public static int WIDTH = 800;
-	public static int HEIGHT = 400;
+	public static int HEIGHT = 800;
 	public static GL2 gl;
 
 	public Viewer(GLCanvas canvas, PCDFile file) {
@@ -67,10 +67,16 @@ public class Viewer extends JFrame implements GLEventListener {
 		else
 			gl.glClearColor(1f, 1f, 1f, 0f);
 
-		gl.glPushMatrix();
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+		
+		gl.glMatrixMode(GL2.GL_PROJECTION); // TODO: Set up a better projection?
+		gl.glLoadIdentity();
+		gl.glOrtho(-input.zoom, input.zoom, -input.zoom, input.zoom, -2, 2);
+		gl.glMatrixMode(GL2.GL_MODELVIEW);
 
-		gl.glTranslatef(input.getxTranslation(), input.getyTranslation(), input.getzTranslation());
+		gl.glLoadIdentity(); // Set up modelview transform.
+		
+		gl.glTranslatef(input.getxTranslation(), input.getyTranslation(), 0.0f);
 		
 		gl.glRotatef(input.getxRotation(), 1.0f, 0.0f, 0.0f);
 		gl.glRotatef(input.getyRotation(), 0.0f, 1.0f, 0.0f);
@@ -97,7 +103,7 @@ public class Viewer extends JFrame implements GLEventListener {
 		}
 		gl.glEnd();
 
-		input.resetValues();
+		// input.resetValues();
 
 	}
 

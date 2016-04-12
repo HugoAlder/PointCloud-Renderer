@@ -24,6 +24,8 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 	private float yRotation = 0.0f;
 	private Point mousePreviousPosition;
 	private Viewer v;
+	
+	public float zoom = 0.5f;
 
 	private ScreenShot screen = new ScreenShot();
 
@@ -68,7 +70,8 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		zTranslation = -0.3f * e.getWheelRotation();
+		// zTranslation = -0.3f * e.getWheelRotation();
+		zoom += -0.05f * e.getWheelRotation();
 	}
 
 	/*
@@ -153,30 +156,30 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 		switch (key) {
 		case KeyEvent.VK_Z:
 		case KeyEvent.VK_W:
-			yTranslation = 0.01f;
+			yTranslation += 0.05f;
 			break;
 		case KeyEvent.VK_S:
-			yTranslation = -0.01f;
+			yTranslation += -0.05f;
 			break;
 		case KeyEvent.VK_Q:
 		case KeyEvent.VK_A:
-			xTranslation = -0.01f;
+			xTranslation += -0.05f;
 			break;
 		case KeyEvent.VK_D:
-			xTranslation = 0.01f;
+			xTranslation += 0.05f;
 			break;
 
 		case KeyEvent.VK_UP:
-			xRotation = -0.05f;
+			xRotation += -1f;
 			break;
 		case KeyEvent.VK_DOWN:
-			xRotation = 0.05f;
+			xRotation += 1f;
 			break;
 		case KeyEvent.VK_LEFT:
-			yRotation = -0.05f;
+			yRotation += -1f;
 			break;
 		case KeyEvent.VK_RIGHT:
-			yRotation = 0.05f;
+			yRotation += 1f;
 			break;
 
 		case KeyEvent.VK_F1:
