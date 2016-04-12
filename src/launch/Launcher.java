@@ -13,8 +13,8 @@ public class Launcher {
 
 	public static void main(String[] args) {
 		Finder.setLookAndFeel();
-		//PCDFile file = Finder.findFile();
-		PCDFile file = Reader.readFile("res/bunny.pcd");
+		PCDFile file = Finder.findFile();
+		//PCDFile file = Reader.readFile("res/bunny.pcd");
 
 		GLProfile.initSingleton();
 		GLProfile glp = GLProfile.getDefault();

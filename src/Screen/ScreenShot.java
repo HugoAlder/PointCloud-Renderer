@@ -20,25 +20,20 @@ import javax.swing.JRootPane;
 import gl.Viewer;
 
 public class ScreenShot {
+
 	int WIDTH = Viewer.WIDTH;
 	int HEIGHT = Viewer.HEIGHT;
-
-	public ScreenShot() {
-
-	}
 
 	public static BufferedImage getScreenShot(Component component) {
 
 		BufferedImage image = new BufferedImage(component.getWidth(), component.getHeight(),
 				BufferedImage.TYPE_INT_RGB);
-		// call the Component's paint method, using
-		// the Graphics object of the image.
-		component.paintAll(image.getGraphics()); // alternately use
-													// .printAll(..)
+		component.paintAll(image.getGraphics());
 		return image;
 	}
 
 	public void registerScreenShot(JFrame frame) throws AWTException {
+
 		File outputfile = getNextScreenFile();
 
 		Robot bot = new Robot();
@@ -50,8 +45,6 @@ public class ScreenShot {
 		JOptionPane.showMessageDialog(null, new JLabel(new ImageIcon(
 				img.getScaledInstance(img.getWidth(null) / 2, img.getHeight(null) / 2, Image.SCALE_SMOOTH))));
 		try {
-			// write the image as a PNG
-
 			ImageIO.write(img, "png", outputfile);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -59,11 +52,9 @@ public class ScreenShot {
 	}
 
 	private File getNextScreenFile() {
-		// create image name
+
 		String fileName = "screenshot_" + getSystemTime(false);
 		File imageToSave = new File(fileName + ".png");
-
-		// check for duplicates
 		int duplicate = 0;
 		while (imageToSave.exists()) {
 			imageToSave = new File(fileName + "_" + ++duplicate + ".png");
@@ -72,8 +63,8 @@ public class ScreenShot {
 		return imageToSave;
 	}
 
-	// format the time
 	public static String getSystemTime(boolean getTimeOnly) {
+
 		SimpleDateFormat dateFormat = new SimpleDateFormat(getTimeOnly ? "HH-mm-ss" : "yyyy-MM-dd'T'HH-mm-ss");
 		return dateFormat.format(new Date());
 	}
