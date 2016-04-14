@@ -30,7 +30,7 @@ public class Viewer extends JFrame implements GLEventListener {
 
 	public static JFrame frame;
 	public static int WIDTH = 800;
-	public static int HEIGHT = 800;
+	public static int HEIGHT = 600;
 	public static GL2 gl;
 
 	public Viewer(GLCanvas canvas, PCDFile file) {

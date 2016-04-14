@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
+<eclipse-userlibraries version="2">
+    <library name="JOGL-Portable" systemlibrary="false">
+        <archive javadoc="https://jogamp.org/deployment/jogamp-next/javadoc/jogl/javadoc/" path="/PointCloud-Renderer/libs/jogamp-all-platforms/jar/gluegen-rt.jar"/>
+        <archive javadoc="https://jogamp.org/deployment/jogamp-next/javadoc/jogl/javadoc/" path="/PointCloud-Renderer/libs/jogamp-all-platforms/jar/jogl-all.jar"/>
+    </library>
+    <library name="OpenCV-3.1-Portable" systemlibrary="false">
+        <archive nativelibpaths="PointCloud-Renderer/libs" path="/PointCloud-Renderer/libs/opencv-310.jar"/>
+    </library>
+</eclipse-userlibraries>

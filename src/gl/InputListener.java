@@ -29,9 +29,10 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 
 	private ScreenShot screen = new ScreenShot();
 
-	public InputListener(Viewer v){
-		this.v = v;		
+	public InputListener(Viewer v) {
+		this.v = v;
 	}
+
 	public void resetValues() {
 		zTranslation = 0.0f;
 		xTranslation = 0.0f;
@@ -183,17 +184,12 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 			break;
 
 		case KeyEvent.VK_F1:
-
 			try {
 
 				screen.registerScreenShot(v);
 			} catch (AWTException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-
-
-			
 			break;
 		case KeyEvent.VK_F2:
 			new Options();

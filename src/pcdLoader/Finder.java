@@ -22,7 +22,7 @@ public class Finder extends JFrame {
 	public static PCDFile findFile() {
 
 		PCDFile chosenFile = null;
-		JFileChooser fc = new JFileChooser();
+		JFileChooser fc = new JFileChooser(System.getProperty("user.dir") + "/res");
 		fc.setDialogTitle("Select your PCD file");
 		Dimension d = new Dimension(800, 600);
 		fc.setPreferredSize(d);
