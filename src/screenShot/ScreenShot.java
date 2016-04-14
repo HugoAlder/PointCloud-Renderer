@@ -1,4 +1,4 @@
-package Screen;
+package screenShot;
 
 import java.awt.AWTException;
 import java.awt.Component;

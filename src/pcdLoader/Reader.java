@@ -5,16 +5,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
 public class Reader {
 
 	public static PCDFile readFile(String filepath) {
+		
+		System.loadLibrary("opencv_java310");
 		PCDFile file = new PCDFile();
-
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		file.data = null;
 		int currentLine = 0;
 
