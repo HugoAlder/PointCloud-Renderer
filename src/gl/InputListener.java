@@ -91,7 +91,7 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 		int diffY = (int) Math.abs(mousePreviousPosition.getY() - currentY);
 
 		if (SwingUtilities.isLeftMouseButton(e)) {
-			double limiter = 5.0 - zoom * 2;
+			double limiter = 6.0 - zoom * 2.0;
 			if (currentX < mousePreviousPosition.getX())
 				x += -speed * diffX / limiter;
 			else if (currentX > mousePreviousPosition.getX())
