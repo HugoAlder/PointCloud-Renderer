@@ -1,6 +1,5 @@
 package gl;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 
 import javax.swing.JFrame;
@@ -11,17 +10,13 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
-import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.glu.GLU;
-import com.jogamp.opengl.util.FPSAnimator;
 
 import pcdLoader.PCDFile;
 
-@SuppressWarnings("serial")
-public class Viewer extends JFrame implements GLEventListener {
+public class Viewer implements GLEventListener {
 
-	private GLU glu;
-	private InputListener input = new InputListener(this);
+	public JFrame frame;
 
 	private PCDFile file;
 	private Mat pointCloud;
@@ -29,31 +24,17 @@ public class Viewer extends JFrame implements GLEventListener {
 	private static Color forcedColor = null;
 
 	public static GL2 gl;
+	private GLU glu;
 
 	private float aspect = 1.0f;
 
-	public Viewer(GLCanvas canvas, PCDFile file) {
-		super("JOGL Program");
+	public double zoom, x, y;
+	public float xRotation, yRotation;
+
+	public Viewer(JFrame frame, PCDFile file) {
+		this.frame = frame;
 		this.file = file;
 		pointCloud = file.getData();
-
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLayout(new BorderLayout());
-		setSize(800, 800);
-		setLocationRelativeTo(null);
-		add(canvas);
-
-		canvas.addMouseWheelListener(input);
-		canvas.addMouseMotionListener(input);
-		canvas.addMouseListener(input);
-		canvas.addKeyListener(input);
-
-		setVisible(true);
-
-		FPSAnimator animator = new FPSAnimator(canvas, 60);
-		animator.start();
-		canvas.requestFocus();
-
 	}
 
 	@Override
@@ -71,10 +52,10 @@ public class Viewer extends JFrame implements GLEventListener {
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
 
-		double left = -input.getZoom() - input.getX();
-		double right = input.getZoom() - input.getX();
-		double bottom = -input.getZoom() - input.getY();
-		double top = input.getZoom() - input.getY();
+		double left = -zoom - x;
+		double right = zoom - x;
+		double bottom = -zoom - y;
+		double top = zoom - y;
 
 		if (aspect >= 1.0) {
 			left *= aspect;
@@ -90,8 +71,8 @@ public class Viewer extends JFrame implements GLEventListener {
 
 		gl.glLoadIdentity();
 
-		gl.glRotatef(input.getxRotation(), 1.0f, 0.0f, 0.0f);
-		gl.glRotatef(input.getyRotation(), 0.0f, 1.0f, 0.0f);
+		gl.glRotatef(xRotation, 1.0f, 0.0f, 0.0f);
+		gl.glRotatef(yRotation, 0.0f, 1.0f, 0.0f);
 
 		gl.glPointSize(1.5f);
 		gl.glBegin(GL2.GL_POINTS);
@@ -164,6 +145,24 @@ public class Viewer extends JFrame implements GLEventListener {
 
 	public static void switchBackgroundColor() {
 		whiteBackground = !whiteBackground;
+	}
+
+	public void setFullScreen() {
+		// TODO
+		/*
+		 * dispose(); setUndecorated(true);
+		 * setExtendedState(JFrame.MAXIMIZED_BOTH); setVisible(true);
+		 * canvas.requestFocus();
+		 */
+	}
+
+	public void setWindowed() {
+		// TODO
+		/*
+		 * dispose(); setUndecorated(false); setExtendedState(JFrame.NORMAL);
+		 * setSize(500, 500); setLocationRelativeTo(null); setVisible(true);
+		 * canvas.requestFocus();
+		 */
 	}
 
 }
