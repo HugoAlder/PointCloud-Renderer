@@ -7,16 +7,14 @@ import com.jogamp.opengl.awt.GLCanvas;
 import gl.Viewer;
 import pcdLoader.Finder;
 import pcdLoader.PCDFile;
+import pcdLoader.Reader;
 
 public class Launcher {
 
 	public static void main(String[] args) {
-		
-		//System.out.println(System.getProperty("java.library.path"));
-		
 		Finder.setLookAndFeel();
-		PCDFile file = Finder.findFile();
-		//PCDFile file = Reader.readFile("res/bunny.pcd");
+		// PCDFile file = Finder.findFile();
+		PCDFile file = Reader.readFile("res/bunny.pcd");
 
 		GLProfile.initSingleton();
 		GLProfile glp = GLProfile.getDefault();

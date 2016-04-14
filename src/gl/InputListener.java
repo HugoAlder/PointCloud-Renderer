@@ -12,7 +12,7 @@ import java.awt.event.MouseWheelListener;
 
 import javax.swing.SwingUtilities;
 
-import options.Options;
+import options.ColorChanger;
 import screenShot.ScreenShot;
 
 public class InputListener implements MouseWheelListener, MouseMotionListener, MouseListener, KeyListener {
@@ -197,7 +197,7 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 			}
 			break;
 		case KeyEvent.VK_F2:
-			new Options();
+			new ColorChanger();
 			break;
 		case KeyEvent.VK_F3:
 			Viewer.resetColor();

@@ -10,11 +10,11 @@ import javax.swing.JFrame;
 import gl.Viewer;
 
 @SuppressWarnings("serial")
-public class Options extends JFrame {
+public class ColorChanger extends JFrame {
 
 	private JColorChooser colorChooser;
 
-	public Options() {
+	public ColorChanger() {
 		super();
 		setTitle("Options");
 		colorChooser = new JColorChooser();
