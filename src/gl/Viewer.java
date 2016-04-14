@@ -28,10 +28,9 @@ public class Viewer extends JFrame implements GLEventListener {
 	private static boolean whiteBackground = false;
 	private static Color forcedColor = null;
 
-	public static JFrame frame;
-	public static int WIDTH = 800;
-	public static int HEIGHT = 600;
 	public static GL2 gl;
+
+	private float aspect = 1.0f;
 
 	public Viewer(GLCanvas canvas, PCDFile file) {
 		super("JOGL Program");
@@ -40,7 +39,7 @@ public class Viewer extends JFrame implements GLEventListener {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
-		setSize(WIDTH, HEIGHT);
+		setSize(800, 800);
 		setLocationRelativeTo(null);
 		add(canvas);
 
@@ -49,7 +48,7 @@ public class Viewer extends JFrame implements GLEventListener {
 		canvas.addMouseListener(input);
 		canvas.addKeyListener(input);
 
-		this.setVisible(true);
+		setVisible(true);
 
 		FPSAnimator animator = new FPSAnimator(canvas, 60);
 		animator.start();
@@ -68,19 +67,32 @@ public class Viewer extends JFrame implements GLEventListener {
 			gl.glClearColor(1f, 1f, 1f, 0f);
 
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-		
-		gl.glMatrixMode(GL2.GL_PROJECTION); // TODO: Set up a better projection?
+
+		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
-		gl.glOrtho(-input.zoom, input.zoom, -input.zoom, input.zoom, -2, 2);
+
+		double left = -input.getZoom() - input.getX();
+		double right = input.getZoom() - input.getX();
+		double bottom = -input.getZoom() - input.getY();
+		double top = input.getZoom() - input.getY();
+
+		if (aspect >= 1.0) {
+			left *= aspect;
+			right *= aspect;
+		} else {
+			bottom /= aspect;
+			top /= aspect;
+		}
+
+		gl.glOrtho(left, right, bottom, top, 1, -1);
+
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 
-		gl.glLoadIdentity(); // Set up modelview transform.
-		
-		gl.glTranslatef(input.getxTranslation(), input.getyTranslation(), 0.0f);
-		
+		gl.glLoadIdentity();
+
 		gl.glRotatef(input.getxRotation(), 1.0f, 0.0f, 0.0f);
 		gl.glRotatef(input.getyRotation(), 0.0f, 1.0f, 0.0f);
-		
+
 		gl.glPointSize(1.5f);
 		gl.glBegin(GL2.GL_POINTS);
 		for (int i = 0; i < pointCloud.rows(); i++) {
@@ -99,11 +111,9 @@ public class Viewer extends JFrame implements GLEventListener {
 				gl.glColor3ub(colors[0], colors[1], colors[2]);
 			}
 
-			gl.glVertex3d(pointCloud.get(i, 0)[0], pointCloud.get(i, 1)[0], pointCloud.get(i, 2)[0]);	
+			gl.glVertex3d(pointCloud.get(i, 0)[0], pointCloud.get(i, 1)[0], pointCloud.get(i, 2)[0]);
 		}
 		gl.glEnd();
-
-		// input.resetValues();
 
 	}
 
@@ -119,11 +129,13 @@ public class Viewer extends JFrame implements GLEventListener {
 
 	@Override
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+		aspect = (float) width / (float) height;
+
 		GL2 gl = drawable.getGL().getGL2();
 
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
-		float aspect = (float) width / (float) height;
+
 		glu.gluPerspective(3.0, aspect, 1.0, 300.0);
 
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
@@ -149,9 +161,9 @@ public class Viewer extends JFrame implements GLEventListener {
 	public static void resetColor() {
 		forcedColor = null;
 	}
-	
+
 	public static void switchBackgroundColor() {
 		whiteBackground = !whiteBackground;
 	}
-	
+
 }

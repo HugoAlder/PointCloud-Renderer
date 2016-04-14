@@ -17,40 +17,38 @@ import options.Options;
 
 public class InputListener implements MouseWheelListener, MouseMotionListener, MouseListener, KeyListener {
 
-	private float zTranslation = 0.0f;
-	private float xTranslation = 0.0f;
-	private float yTranslation = 0.0f;
-	private float xRotation = 0.0f;
-	private float yRotation = 0.0f;
-	private Point mousePreviousPosition;
 	private Viewer v;
-	
-	public float zoom = 0.5f;
+
+	private Point mousePreviousPosition;
+
+	private double zoom, x, y;
+	private float xRotation, yRotation;
 
 	private ScreenShot screen = new ScreenShot();
 
 	public InputListener(Viewer v) {
 		this.v = v;
+		resetValues();
 	}
 
 	public void resetValues() {
-		zTranslation = 0.0f;
-		xTranslation = 0.0f;
-		yTranslation = 0.0f;
 		xRotation = 0.0f;
 		yRotation = 0.0f;
+		zoom = 0.3;
+		x = 0.0;
+		y = 0.0;
 	}
 
-	public float getzTranslation() {
-		return zTranslation;
+	public double getZoom() {
+		return zoom;
 	}
 
-	public float getxTranslation() {
-		return xTranslation;
+	public double getX() {
+		return x;
 	}
 
-	public float getyTranslation() {
-		return yTranslation;
+	public double getY() {
+		return y;
 	}
 
 	public float getxRotation() {
@@ -71,8 +69,11 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		// zTranslation = -0.3f * e.getWheelRotation();
-		zoom += -0.05f * e.getWheelRotation();
+		zoom += 0.05f * e.getWheelRotation();
+		if (zoom < 0.05)
+			zoom = 0.05;
+		else if (zoom > 2.0)
+			zoom = 2.0;
 	}
 
 	/*
@@ -90,23 +91,25 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 		int diffY = (int) Math.abs(mousePreviousPosition.getY() - currentY);
 
 		if (SwingUtilities.isLeftMouseButton(e)) {
+			double limiter = 5.0 - zoom * 2;
 			if (currentX < mousePreviousPosition.getX())
-				xTranslation = -speed * diffX / 10.0f;
+				x += -speed * diffX / limiter;
 			else if (currentX > mousePreviousPosition.getX())
-				xTranslation = speed * diffX / 10.0f;
+				x += speed * diffX / limiter;
 			if (currentY < mousePreviousPosition.getY())
-				yTranslation = speed * diffY / 10.0f;
+				y += speed * diffY / limiter;
 			else if (currentY > mousePreviousPosition.getY())
-				yTranslation = -speed * diffY / 10.0f;
+				y += -speed * diffY / limiter;
 		} else if (SwingUtilities.isRightMouseButton(e)) {
+			double multiplier = 35.0;
 			if (currentX < mousePreviousPosition.getX())
-				yRotation = -speed * diffX * 10;
+				yRotation += -speed * diffX * multiplier;
 			else if (currentX > mousePreviousPosition.getX())
-				yRotation = speed * diffX * 10;
+				yRotation += speed * diffX * multiplier;
 			if (currentY < mousePreviousPosition.getY())
-				xRotation = speed * diffY * 10;
+				xRotation += speed * diffY * multiplier;
 			else if (currentY > mousePreviousPosition.getY())
-				xRotation = -speed * diffY * 10;
+				xRotation += -speed * diffY * multiplier;
 		}
 
 		mousePreviousPosition = new Point(currentX, currentY);
@@ -153,39 +156,41 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 	@Override
 	public void keyPressed(java.awt.event.KeyEvent e) {
 
+		float speedTranslation = 0.05f;
+		float speedRotation = 3f;
+
 		int key = e.getKeyCode();
 		switch (key) {
 		case KeyEvent.VK_Z:
 		case KeyEvent.VK_W:
-			yTranslation += 0.05f;
+			y += speedTranslation;
 			break;
 		case KeyEvent.VK_S:
-			yTranslation += -0.05f;
+			y += -speedTranslation;
 			break;
 		case KeyEvent.VK_Q:
 		case KeyEvent.VK_A:
-			xTranslation += -0.05f;
+			x += -speedTranslation;
 			break;
 		case KeyEvent.VK_D:
-			xTranslation += 0.05f;
+			x += speedTranslation;
 			break;
 
 		case KeyEvent.VK_UP:
-			xRotation += -1f;
+			xRotation += -speedRotation;
 			break;
 		case KeyEvent.VK_DOWN:
-			xRotation += 1f;
+			xRotation += speedRotation;
 			break;
 		case KeyEvent.VK_LEFT:
-			yRotation += -1f;
+			yRotation += -speedRotation;
 			break;
 		case KeyEvent.VK_RIGHT:
-			yRotation += 1f;
+			yRotation += speedRotation;
 			break;
 
 		case KeyEvent.VK_F1:
 			try {
-
 				screen.registerScreenShot(v);
 			} catch (AWTException e1) {
 				e1.printStackTrace();
@@ -199,6 +204,9 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 			break;
 		case KeyEvent.VK_F4:
 			Viewer.switchBackgroundColor();
+			break;
+		case KeyEvent.VK_F5:
+			resetValues();
 			break;
 
 		}

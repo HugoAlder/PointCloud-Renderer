@@ -17,12 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
 
-import gl.Viewer;
-
 public class ScreenShot {
-
-	int WIDTH = Viewer.WIDTH;
-	int HEIGHT = Viewer.HEIGHT;
 
 	public static BufferedImage getScreenShot(Component component) {
 
