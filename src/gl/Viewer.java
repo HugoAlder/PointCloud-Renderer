@@ -142,27 +142,27 @@ public class Viewer implements GLEventListener {
 	public static void resetColor() {
 		forcedColor = null;
 	}
-
+	
 	public static void switchBackgroundColor() {
 		whiteBackground = !whiteBackground;
 	}
 
 	public void setFullScreen() {
-		// TODO
-		/*
-		 * dispose(); setUndecorated(true);
-		 * setExtendedState(JFrame.MAXIMIZED_BOTH); setVisible(true);
-		 * canvas.requestFocus();
-		 */
+		frame.dispose();
+		frame.setUndecorated(true);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.setVisible(true);
+		// canvas.requestFocus();
 	}
 
 	public void setWindowed() {
-		// TODO
-		/*
-		 * dispose(); setUndecorated(false); setExtendedState(JFrame.NORMAL);
-		 * setSize(500, 500); setLocationRelativeTo(null); setVisible(true);
-		 * canvas.requestFocus();
-		 */
+		frame.dispose();
+		frame.setUndecorated(false);
+		frame.setExtendedState(JFrame.NORMAL);
+		frame.setSize(500, 500);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+		// canvas.requestFocus();
 	}
 
 }

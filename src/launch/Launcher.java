@@ -12,7 +12,6 @@ import com.jogamp.opengl.util.FPSAnimator;
 
 import gl.InputListener;
 import gl.Viewer;
-import options.OptionsPanel;
 import pcdLoader.Finder;
 import pcdLoader.PCDFile;
 import pcdLoader.Reader;

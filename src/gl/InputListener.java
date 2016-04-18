@@ -13,7 +13,6 @@ import java.awt.event.MouseWheelListener;
 import javax.swing.SwingUtilities;
 
 import options.ColorChanger;
-import options.OptionsPanel;
 import screenShot.ScreenShot;
 
 public class InputListener implements MouseWheelListener, MouseMotionListener, MouseListener, KeyListener {
@@ -183,10 +182,11 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 			resetValues();
 			break;
 		case KeyEvent.VK_F11:
-			// TODO
-			/*
-			 * if (v.isUndecorated()) v.setWindowed(); else v.setFullScreen();
-			 */
+			if (v.frame.isUndecorated())
+				v.setWindowed();
+			else
+				v.setFullScreen();
+
 			break;
 
 		}
