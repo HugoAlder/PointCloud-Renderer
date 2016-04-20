@@ -80,7 +80,7 @@ public class Viewer implements GLEventListener {
 		for (int i = 0; i < pointCloud.rows(); i++) {
 			if (forcedColor == null) {
 
-				gl.glColor3d(0, 1, 0);
+				gl.glColor3d(0.1098, 0.5412, 0.8588);
 
 				if (file.isColored()) {
 					float rgb = (float) pointCloud.get(i, pointCloud.cols() - 1)[0];

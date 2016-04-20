@@ -46,8 +46,6 @@ public class Launcher {
 		glPanel.addMouseListener(input);
 		glPanel.addKeyListener(input);
 
-		// TODO
-
 		JPanel hud = new HUD();
 		hud.setBounds(0, 0, 800, 800);
 
@@ -66,8 +64,6 @@ public class Launcher {
 
 		mainPanel.add(glPanel, new Integer(0));
 		mainPanel.add(hud, new Integer(1));
-
-		// TODO
 
 		frame.pack();
 		frame.setLocationRelativeTo(null);
