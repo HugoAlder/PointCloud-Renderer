@@ -1,17 +1,22 @@
 package launch;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
 
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
-import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.util.FPSAnimator;
 
 import gl.InputListener;
 import gl.Viewer;
+import options.HUD;
 import pcdLoader.Finder;
 import pcdLoader.PCDFile;
 import pcdLoader.Reader;
@@ -26,37 +31,52 @@ public class Launcher {
 		GLProfile.initSingleton();
 		GLProfile glp = GLProfile.getDefault();
 		GLCapabilities caps = new GLCapabilities(glp);
-		GLCanvas canvas = new GLCanvas(caps);
+		GLJPanel glPanel = new GLJPanel(caps);
 
 		JFrame frame = new JFrame("JOGL Program");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
-		frame.setSize(800, 800);
-		frame.setLocationRelativeTo(null);
+		frame.setPreferredSize(new Dimension(800, 800));
 
 		Viewer viewer = new Viewer(frame, file);
-		canvas.addGLEventListener(viewer);
+		glPanel.addGLEventListener(viewer);
+		InputListener input = new InputListener(viewer);
+		glPanel.addMouseWheelListener(input);
+		glPanel.addMouseMotionListener(input);
+		glPanel.addMouseListener(input);
+		glPanel.addKeyListener(input);
+
+		// TODO
+
+		JPanel hud = new HUD();
+		hud.setBounds(0, 0, 800, 800);
+
+		glPanel.setBounds(0, 0, 800, 800);
 
 		JLayeredPane mainPanel = new JLayeredPane();
-		mainPanel.setLayout(new BorderLayout());
-		mainPanel.setPreferredSize(frame.getSize());
-		frame.add(mainPanel);
+		mainPanel.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				glPanel.setSize(mainPanel.getSize());
+				hud.setSize(mainPanel.getSize());
+			}
+		});
 
-		mainPanel.add(canvas);
+		frame.setContentPane(mainPanel);
 
-		InputListener input = new InputListener(viewer);
-		canvas.addMouseWheelListener(input);
-		canvas.addMouseMotionListener(input);
-		canvas.addMouseListener(input);
-		canvas.addKeyListener(input);
+		mainPanel.add(glPanel, new Integer(0));
+		mainPanel.add(hud, new Integer(1));
+
+		// TODO
 
 		frame.pack();
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 
-		FPSAnimator animator = new FPSAnimator(canvas, 60);
+		FPSAnimator animator = new FPSAnimator(glPanel, 60);
 		animator.start();
 
-		canvas.requestFocus();
+		glPanel.requestFocus();
 	}
 
 }

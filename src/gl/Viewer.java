@@ -11,6 +11,7 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.util.awt.Overlay;
 
 import pcdLoader.PCDFile;
 
@@ -95,7 +96,7 @@ public class Viewer implements GLEventListener {
 			gl.glVertex3d(pointCloud.get(i, 0)[0], pointCloud.get(i, 1)[0], pointCloud.get(i, 2)[0]);
 		}
 		gl.glEnd();
-
+		
 	}
 
 	@Override
