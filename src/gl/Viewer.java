@@ -11,7 +11,6 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
-import com.jogamp.opengl.util.awt.Overlay;
 
 import pcdLoader.PCDFile;
 
@@ -21,10 +20,10 @@ public class Viewer implements GLEventListener {
 
 	private PCDFile file;
 	private Mat pointCloud;
-	private static boolean whiteBackground = false;
-	private static Color forcedColor = null;
+	public static boolean whiteBackground = false;
+	public static Color forcedColor = null;
 
-	public static GL2 gl;
+	private GL2 gl;
 	private GLU glu;
 
 	private float aspect = 1.0f;
@@ -75,7 +74,7 @@ public class Viewer implements GLEventListener {
 		gl.glRotatef(xRotation, 1.0f, 0.0f, 0.0f);
 		gl.glRotatef(yRotation, 0.0f, 1.0f, 0.0f);
 
-		gl.glPointSize(1.5f);
+		gl.glPointSize(2.5f);
 		gl.glBegin(GL2.GL_POINTS);
 		for (int i = 0; i < pointCloud.rows(); i++) {
 			if (forcedColor == null) {
@@ -96,7 +95,7 @@ public class Viewer implements GLEventListener {
 			gl.glVertex3d(pointCloud.get(i, 0)[0], pointCloud.get(i, 1)[0], pointCloud.get(i, 2)[0]);
 		}
 		gl.glEnd();
-		
+
 	}
 
 	@Override
@@ -143,7 +142,7 @@ public class Viewer implements GLEventListener {
 	public static void resetColor() {
 		forcedColor = null;
 	}
-	
+
 	public static void switchBackgroundColor() {
 		whiteBackground = !whiteBackground;
 	}
