@@ -2,12 +2,14 @@ package options;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Area;
 
 import javax.swing.BorderFactory;
@@ -15,6 +17,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import gl.Viewer;
 
@@ -27,9 +30,11 @@ public class HUD extends JPanel {
 	private ImageIcon gearImage = new ImageIcon("res/gear2.png");
 	private ImageIcon crossImage = new ImageIcon("res/cross.png");
 
+	private JLabel mouseOverText = new JLabel();
 	private boolean optionsAlwaysShowed = false;
 	private JLabel optionsShow = new JLabel();
 	private JLabel colorBackground = new JLabel();
+	private JLabel fullScreen = new JLabel();
 
 	public HUD() {
 		this.areOptionsOpen = false;
@@ -61,20 +66,24 @@ public class HUD extends JPanel {
 			}
 		});
 
-		colorBackground.setBounds(150, 45, 50, 50);
-		colorBackground.setFocusable(false);
-		colorBackground.setOpaque(true);
+		mouseOverText.setBounds(150, 0, 650, 45);
+		mouseOverText.setFocusable(false);
+		mouseOverText.setForeground(Viewer.whiteBackground ? Color.BLACK : Color.WHITE);
+		mouseOverText.setFont(new Font("arial", 1, 20));
+		mouseOverText.setHorizontalAlignment(SwingConstants.CENTER);
+		mouseOverText.setVerticalAlignment(SwingConstants.CENTER);
+
+		colorBackground = createOption(150, 45, Viewer.whiteBackground, "Change background color");
 		colorBackground.setBackground(Viewer.whiteBackground ? Color.WHITE : Color.BLACK);
-		colorBackground
-				.setBorder(BorderFactory.createLineBorder(Viewer.whiteBackground ? Color.BLACK : Color.WHITE, 4));
 		colorBackground.addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				Viewer.whiteBackground = !Viewer.whiteBackground;
 				colorBackground.setBackground(Viewer.whiteBackground ? Color.WHITE : Color.BLACK);
+				mouseOverText.setForeground(Viewer.whiteBackground ? Color.BLACK : Color.WHITE);
 				for (Component c : getComponents()) {
-					if (c != options)
+					if (c != options && c != mouseOverText)
 						((JComponent) c).setBorder(
 								BorderFactory.createLineBorder(Viewer.whiteBackground ? Color.BLACK : Color.WHITE, 4));
 				}
@@ -82,11 +91,7 @@ public class HUD extends JPanel {
 
 		});
 
-		optionsShow.setBounds(225, 45, 50, 50);
-		optionsShow.setFocusable(false);
-		optionsShow.setOpaque(true);
-		optionsShow.setBackground(optionsAlwaysShowed ? Color.GREEN : Color.GRAY);
-		optionsShow.setBorder(BorderFactory.createLineBorder(Viewer.whiteBackground ? Color.BLACK : Color.WHITE, 4));
+		optionsShow = createOption(225, 45, optionsAlwaysShowed, "Always show options button");
 		optionsShow.addMouseListener(new MouseAdapter() {
 
 			@Override
@@ -97,11 +102,55 @@ public class HUD extends JPanel {
 
 		});
 
+		fullScreen = createOption(300, 45, Viewer.frame.isUndecorated(), "Activate fullscreen");
+		fullScreen.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (Viewer.frame.isUndecorated())
+					Viewer.setWindowed();
+				else
+					Viewer.setFullScreen();
+				fullScreen.setBackground(Viewer.frame.isUndecorated() ? Color.GREEN : Color.GRAY);
+				mouseOverText.setVisible(false);
+			}
+
+		});
+
 		add(options);
 		add(colorBackground);
 		add(optionsShow);
+		add(fullScreen);
+		add(mouseOverText);
 
 		closeOptionsMenu();
+	}
+
+	public JLabel createOption(int x, int y, Boolean value, String description) {
+		JLabel res = new JLabel();
+		res.setBounds(x, y, 50, 50);
+		res.setFocusable(false);
+		res.setOpaque(true);
+		if (value != null)
+			res.setBackground(value ? Color.GREEN : Color.GRAY);
+		res.setBorder(BorderFactory.createLineBorder(Viewer.whiteBackground ? Color.BLACK : Color.WHITE, 4));
+		
+		res.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				mouseOverText.setText(description);
+				mouseOverText.setVisible(true);
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				mouseOverText.setVisible(false);
+			}
+			
+		});
+
+		return res;
 	}
 
 	public void closeOptionsMenu() {

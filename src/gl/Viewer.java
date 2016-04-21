@@ -16,7 +16,7 @@ import pcdLoader.PCDFile;
 
 public class Viewer implements GLEventListener {
 
-	public JFrame frame;
+	public static JFrame frame;
 
 	private PCDFile file;
 	private Mat pointCloud;
@@ -147,7 +147,7 @@ public class Viewer implements GLEventListener {
 		whiteBackground = !whiteBackground;
 	}
 
-	public void setFullScreen() {
+	public static void setFullScreen() {
 		frame.dispose();
 		frame.setUndecorated(true);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -155,11 +155,11 @@ public class Viewer implements GLEventListener {
 		// canvas.requestFocus();
 	}
 
-	public void setWindowed() {
+	public static void setWindowed() {
 		frame.dispose();
 		frame.setUndecorated(false);
 		frame.setExtendedState(JFrame.NORMAL);
-		frame.setSize(500, 500);
+		frame.setSize(800, 800);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		// canvas.requestFocus();

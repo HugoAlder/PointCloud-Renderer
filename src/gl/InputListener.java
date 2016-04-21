@@ -182,11 +182,10 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 			resetValues();
 			break;
 		case KeyEvent.VK_F11:
-			if (v.frame.isUndecorated())
-				v.setWindowed();
+			if (Viewer.frame.isUndecorated())
+				Viewer.setWindowed();
 			else
-				v.setFullScreen();
-
+				Viewer.setFullScreen();
 			break;
 
 		}
