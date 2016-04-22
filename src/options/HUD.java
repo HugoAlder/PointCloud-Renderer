@@ -27,11 +27,13 @@ public class HUD extends JPanel {
 	private boolean areOptionsOpen;
 
 	private JLabel options = new JLabel();
-	private ImageIcon gearImage = new ImageIcon("res/gear2.png");
-	private ImageIcon crossImage = new ImageIcon("res/cross.png");
+	private ImageIcon gearImage = new ImageIcon("res/images/gear.png");
+	private ImageIcon crossImage = new ImageIcon("res/images/cross.png");
+	private JLabel home = new JLabel();
+	private ImageIcon homeImage = new ImageIcon("res/images/home.png");
 
 	private JLabel mouseOverText = new JLabel();
-	private boolean optionsAlwaysShowed = false;
+	private boolean optionsAlwaysShowed = true;
 	private JLabel optionsShow = new JLabel();
 	private JLabel colorBackground = new JLabel();
 	private JLabel fullScreen = new JLabel();
@@ -66,6 +68,28 @@ public class HUD extends JPanel {
 			}
 		});
 
+		home.setBounds(20, 140, 100, 100);
+		home.setFocusable(false);
+		home.setIcon(homeImage);
+		home.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Viewer.resetValues();
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if (!optionsAlwaysShowed && !areOptionsOpen)
+					home.setIcon(homeImage);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				if (!optionsAlwaysShowed && !areOptionsOpen)
+					home.setIcon(null);
+			}
+		});
+
 		mouseOverText.setBounds(150, 0, 650, 45);
 		mouseOverText.setFocusable(false);
 		mouseOverText.setForeground(Viewer.whiteBackground ? Color.BLACK : Color.WHITE);
@@ -83,7 +107,7 @@ public class HUD extends JPanel {
 				colorBackground.setBackground(Viewer.whiteBackground ? Color.WHITE : Color.BLACK);
 				mouseOverText.setForeground(Viewer.whiteBackground ? Color.BLACK : Color.WHITE);
 				for (Component c : getComponents()) {
-					if (c != options && c != mouseOverText)
+					if (c != options && c != mouseOverText && c != home)
 						((JComponent) c).setBorder(
 								BorderFactory.createLineBorder(Viewer.whiteBackground ? Color.BLACK : Color.WHITE, 4));
 				}
@@ -118,6 +142,7 @@ public class HUD extends JPanel {
 		});
 
 		add(options);
+		add(home);
 		add(colorBackground);
 		add(optionsShow);
 		add(fullScreen);
@@ -134,20 +159,20 @@ public class HUD extends JPanel {
 		if (value != null)
 			res.setBackground(value ? Color.GREEN : Color.GRAY);
 		res.setBorder(BorderFactory.createLineBorder(Viewer.whiteBackground ? Color.BLACK : Color.WHITE, 4));
-		
+
 		res.addMouseListener(new MouseAdapter() {
-			
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				mouseOverText.setText(description);
 				mouseOverText.setVisible(true);
 			}
-			
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				mouseOverText.setVisible(false);
 			}
-			
+
 		});
 
 		return res;
@@ -156,10 +181,17 @@ public class HUD extends JPanel {
 	public void closeOptionsMenu() {
 		areOptionsOpen = false;
 		options.setIcon(gearImage);
+
 		for (Component c : getComponents()) {
 			if (c != options)
 				c.setVisible(false);
 		}
+		home.setVisible(true);
+		if (optionsAlwaysShowed)
+			home.setIcon(homeImage);
+		else
+			home.setIcon(null);
+
 	}
 
 	public void openOptionsMenu() {
@@ -169,6 +201,7 @@ public class HUD extends JPanel {
 			if (c != options)
 				c.setVisible(true);
 		}
+		home.setVisible(false);
 	}
 
 	@Override

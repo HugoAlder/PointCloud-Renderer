@@ -40,7 +40,7 @@ public class Launcher {
 
 		Viewer viewer = new Viewer(frame, file);
 		glPanel.addGLEventListener(viewer);
-		InputListener input = new InputListener(viewer);
+		InputListener input = new InputListener();
 		glPanel.addMouseWheelListener(input);
 		glPanel.addMouseMotionListener(input);
 		glPanel.addMouseListener(input);

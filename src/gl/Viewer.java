@@ -28,8 +28,8 @@ public class Viewer implements GLEventListener {
 
 	private float aspect = 1.0f;
 
-	public double zoom, x, y;
-	public float xRotation, yRotation;
+	public static double zoom, x, y;
+	public static float xRotation, yRotation;
 
 	public Viewer(JFrame frame, PCDFile file) {
 		this.frame = frame;
@@ -163,6 +163,14 @@ public class Viewer implements GLEventListener {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		// canvas.requestFocus();
+	}
+	
+	public static void resetValues() {
+		xRotation = 0.0f;
+		yRotation = 0.0f;
+		zoom = 0.3;
+		x = 0.0;
+		y = 0.0;
 	}
 
 }
