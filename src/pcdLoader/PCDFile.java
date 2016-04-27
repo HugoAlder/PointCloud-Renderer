@@ -1,8 +1,15 @@
 package pcdLoader;
 
+import java.io.File;
+
 import org.opencv.core.Mat;
 
-public class PCDFile {
+@SuppressWarnings("serial")
+public class PCDFile extends File {
+
+	public PCDFile(String pathname) {
+		super(pathname);
+	}
 
 	protected double version;
 	protected String[] fields;
@@ -14,6 +21,7 @@ public class PCDFile {
 	protected int height;
 	protected int[] viewpoint;
 	protected int points;
+	protected String datatype;
 	protected Mat data;
 	
 	public double getVersion() {
@@ -54,6 +62,10 @@ public class PCDFile {
 
 	public int getPoints() {
 		return points;
+	}
+	
+	public String getDatatype() {
+		return datatype;
 	}
 
 	public Mat getData() {

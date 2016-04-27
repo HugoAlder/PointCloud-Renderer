@@ -1,8 +1,11 @@
 package pcdLoader;
 
 import java.io.BufferedReader;
+
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import org.opencv.core.CvType;
@@ -11,16 +14,19 @@ import org.opencv.core.Mat;
 public class Reader {
 
 	public static PCDFile readFile(String filepath) {
-		
+
 		System.loadLibrary("opencv_java310");
-		PCDFile file = new PCDFile();
+		PCDFile file = new PCDFile(filepath);
 		file.data = null;
 		int currentLine = 0;
 
-		try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+		try {
+
+			BufferedReader br = new BufferedReader(new FileReader(filepath));
 
 			String sCurrentLine;
-			while ((sCurrentLine = br.readLine()) != null) {
+			for (int i = 0; i < 11; i++) {
+				sCurrentLine = br.readLine();
 				String[] words = sCurrentLine.trim().split(" ");
 				String firstWord = words[0].toUpperCase();
 				switch (firstWord) {
@@ -31,7 +37,7 @@ public class Reader {
 					break;
 				case "FIELDS":
 					file.fields = Arrays.copyOfRange(words, 1, words.length);
-					file.colored = file.fields[file.fields.length-1].equals("rgb");
+					file.colored = file.fields[file.fields.length - 1].equals("rgb");
 					break;
 				case "SIZE":
 					file.size = StringArraytoIntArray(Arrays.copyOfRange(words, 1, words.length));
@@ -55,22 +61,44 @@ public class Reader {
 					file.points = Integer.parseInt(words[1]);
 					break;
 				case "DATA":
+					file.datatype = words[1];
 					file.data = new Mat(file.points, file.fields.length, CvType.CV_32FC1);
 					break;
 
-				default:
-					file.data.put(currentLine, 0, StringArraytoFloatArray(words));
-					currentLine++;
-					if(currentLine%500 == 0)
-					break;
 				}
 			}
 
+			// Reading the data in ASCII or in binary
+
+			if (file.datatype.equals("ascii")) {
+				while ((sCurrentLine = br.readLine()) != null) {
+					String[] words = sCurrentLine.trim().split(" ");
+					file.data.put(currentLine, 0, StringArraytoFloatArray(words));
+					currentLine++;
+				}
+			} else if (file.datatype.equals("binary")) {
+
+				System.out.println("OK BINARY");
+
+				byte[] bytes = new byte[1024];
+				int readBytes;
+				FileInputStream in = new FileInputStream(file);
+				while ((readBytes = in.read(bytes)) != -1) {
+					System.out.println("read " + readBytes + " bytes, and placed them into temp array named data");
+					String str = new String(bytes, StandardCharsets.UTF_8);
+					System.out.println(str);
+				}
+				in.close();
+
+			}
+
+			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		return file;
+
 	}
 
 	private static int[] StringArraytoIntArray(String[] array) {

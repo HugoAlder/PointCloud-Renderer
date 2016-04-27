@@ -2,6 +2,8 @@ package pcdLoader;
 
 import java.awt.Dimension;
 import java.io.File;
+import java.io.IOException;
+
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
@@ -19,7 +21,7 @@ public class Finder extends JFrame {
 		}
 	}
 
-	public static PCDFile findFile() {
+	public static PCDFile findFile() throws IOException {
 
 		PCDFile chosenFile = null;
 		JFileChooser fc = new JFileChooser(System.getProperty("user.dir") + "/res");
