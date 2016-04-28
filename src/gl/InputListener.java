@@ -19,8 +19,6 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 
 	private Point mousePreviousPosition;
 
-	private ScreenShot screen = new ScreenShot();
-
 	public InputListener() {
 		Viewer.resetValues();
 	}
@@ -153,7 +151,7 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 
 		case KeyEvent.VK_F1:
 			try {
-				screen.registerScreenShot(Viewer.frame);
+				ScreenShot.registerScreenShot(Viewer.frame);
 			} catch (AWTException e1) {
 				e1.printStackTrace();
 			}

@@ -124,7 +124,7 @@ public class Viewer implements GLEventListener {
 		glu.gluLookAt(0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 	}
 
-	public byte[] colorReader(Color c) {
+	private byte[] colorReader(Color c) {
 		byte[] out = new byte[3];
 		int r = c.getRed();
 		int g = c.getGreen();
@@ -164,7 +164,7 @@ public class Viewer implements GLEventListener {
 		frame.setVisible(true);
 		// canvas.requestFocus();
 	}
-	
+
 	public static void resetValues() {
 		xRotation = 0.0f;
 		yRotation = 0.0f;

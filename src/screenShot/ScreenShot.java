@@ -20,14 +20,13 @@ import javax.swing.JRootPane;
 public class ScreenShot {
 
 	public static BufferedImage getScreenShot(Component component) {
-
 		BufferedImage image = new BufferedImage(component.getWidth(), component.getHeight(),
 				BufferedImage.TYPE_INT_RGB);
 		component.paintAll(image.getGraphics());
 		return image;
 	}
 
-	public void registerScreenShot(JFrame frame) throws AWTException {
+	public static void registerScreenShot(JFrame frame) throws AWTException {
 
 		File outputfile = getNextScreenFile();
 
@@ -46,7 +45,7 @@ public class ScreenShot {
 		}
 	}
 
-	private File getNextScreenFile() {
+	private static File getNextScreenFile() {
 
 		String fileName = "screenshot_" + getSystemTime(false);
 		File imageToSave = new File(fileName + ".png");

@@ -1,5 +1,6 @@
 package options;
 
+import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -20,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import gl.Viewer;
+import screenShot.ScreenShot;
 
 @SuppressWarnings("serial")
 public class HUD extends JPanel {
@@ -31,6 +33,8 @@ public class HUD extends JPanel {
 	private ImageIcon crossImage = new ImageIcon("res/images/cross.png");
 	private JLabel home = new JLabel();
 	private ImageIcon homeImage = new ImageIcon("res/images/home.png");
+	private JLabel screenshot = new JLabel();
+	private ImageIcon screenshotImage = new ImageIcon("res/images/screenshot.png");
 
 	private JLabel mouseOverText = new JLabel();
 	private boolean optionsAlwaysShowed = true;
@@ -90,6 +94,38 @@ public class HUD extends JPanel {
 			}
 		});
 
+		screenshot.setBounds(20, 260, 100, 100);
+		screenshot.setFocusable(false);
+		screenshot.setIcon(screenshotImage);
+		screenshot.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				options.setVisible(false);
+				home.setVisible(false);
+				screenshot.setVisible(false);
+				try {
+					ScreenShot.registerScreenShot(Viewer.frame);
+				} catch (AWTException e1) {
+					e1.printStackTrace();
+				}
+				options.setVisible(true);
+				home.setVisible(true);
+				screenshot.setVisible(true);
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if (!optionsAlwaysShowed && !areOptionsOpen)
+					screenshot.setIcon(screenshotImage);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				if (!optionsAlwaysShowed && !areOptionsOpen)
+					screenshot.setIcon(null);
+			}
+		});
+
 		mouseOverText.setBounds(150, 0, 650, 45);
 		mouseOverText.setFocusable(false);
 		mouseOverText.setForeground(Viewer.whiteBackground ? Color.BLACK : Color.WHITE);
@@ -143,6 +179,7 @@ public class HUD extends JPanel {
 
 		add(options);
 		add(home);
+		add(screenshot);
 		add(colorBackground);
 		add(optionsShow);
 		add(fullScreen);
@@ -187,10 +224,14 @@ public class HUD extends JPanel {
 				c.setVisible(false);
 		}
 		home.setVisible(true);
-		if (optionsAlwaysShowed)
+		screenshot.setVisible(true);
+		if (optionsAlwaysShowed) {
 			home.setIcon(homeImage);
-		else
+			screenshot.setIcon(screenshotImage);
+		} else {
 			home.setIcon(null);
+			screenshot.setIcon(null);
+		}
 
 	}
 
@@ -202,6 +243,7 @@ public class HUD extends JPanel {
 				c.setVisible(true);
 		}
 		home.setVisible(false);
+		screenshot.setVisible(false);
 	}
 
 	@Override
