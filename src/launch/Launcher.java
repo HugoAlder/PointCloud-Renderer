@@ -36,7 +36,6 @@ public class Launcher {
 		JFrame frame = new JFrame("JOGL Program");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
-		frame.setPreferredSize(new Dimension(800, 800));
 
 		Viewer viewer = new Viewer(frame, file);
 		glPanel.addGLEventListener(viewer);
@@ -47,11 +46,12 @@ public class Launcher {
 		glPanel.addKeyListener(input);
 
 		JPanel hud = new HUD();
-		hud.setBounds(0, 0, 800, 800);
+		hud.setBounds(0, 0, 1000, 800);
 
-		glPanel.setBounds(0, 0, 800, 800);
+		glPanel.setBounds(0, 0, 1000, 800);
 
 		JLayeredPane mainPanel = new JLayeredPane();
+		mainPanel.setPreferredSize(new Dimension(1000, 800));
 		mainPanel.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {

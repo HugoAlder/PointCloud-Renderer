@@ -9,6 +9,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.ArrayList;
 
 import javax.swing.SwingUtilities;
 
@@ -42,7 +43,6 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		float speed = 0.005f;
 
 		int currentX = e.getX();
 		int currentY = e.getY();
@@ -51,25 +51,24 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 		int diffY = (int) Math.abs(mousePreviousPosition.getY() - currentY);
 
 		if (SwingUtilities.isLeftMouseButton(e)) {
-			double limiter = 6.0 - Viewer.zoom * 2.0;
 			if (currentX < mousePreviousPosition.getX())
-				Viewer.x += -speed * diffX / limiter;
+				Viewer.x -= diffX / (double) Viewer.frame.getWidth();
 			else if (currentX > mousePreviousPosition.getX())
-				Viewer.x += speed * diffX / limiter;
+				Viewer.x += diffX / (double) Viewer.frame.getWidth();
 			if (currentY < mousePreviousPosition.getY())
-				Viewer.y += speed * diffY / limiter;
+				Viewer.y += diffY / (double) Viewer.frame.getHeight();
 			else if (currentY > mousePreviousPosition.getY())
-				Viewer.y += -speed * diffY / limiter;
+				Viewer.y -= diffY / (double) Viewer.frame.getHeight();
 		} else if (SwingUtilities.isRightMouseButton(e)) {
-			double multiplier = 35.0;
+			double limiter = 5;
 			if (currentX < mousePreviousPosition.getX())
-				Viewer.yRotation += -speed * diffX * multiplier;
+				Viewer.yRotation -= diffX / limiter;
 			else if (currentX > mousePreviousPosition.getX())
-				Viewer.yRotation += speed * diffX * multiplier;
+				Viewer.yRotation += diffX / limiter;
 			if (currentY < mousePreviousPosition.getY())
-				Viewer.xRotation += speed * diffY * multiplier;
+				Viewer.xRotation -= diffY / limiter;
 			else if (currentY > mousePreviousPosition.getY())
-				Viewer.xRotation += -speed * diffY * multiplier;
+				Viewer.xRotation += diffY / limiter;
 		}
 
 		mousePreviousPosition = new Point(currentX, currentY);
@@ -106,7 +105,7 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		
+
 	}
 
 	/*
