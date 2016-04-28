@@ -78,15 +78,28 @@ public class Reader {
 				}
 			} else if (file.datatype.equals("binary")) {
 
-				System.out.println("OK BINARY");
-
-				byte[] bytes = new byte[1024];
 				int readBytes;
+				int points = 0;
+				byte[] bytes = new byte[1024];
 				FileInputStream in = new FileInputStream(file);
 				while ((readBytes = in.read(bytes)) != -1) {
-					System.out.println("read " + readBytes + " bytes, and placed them into temp array named data");
-					String str = new String(bytes, StandardCharsets.UTF_8);
-					System.out.println(str);
+					int j = 0;
+					while(j < 1024) {
+						float[] line = new float[4];
+						for (int i = 0; i < 4; i++) {
+							int asInt = (bytes[j] & 0xFF) | ((bytes[j + 1] & 0xFF) << 8) | ((bytes[j + 2] & 0xFF) << 16)
+									| ((bytes[j + 3] & 0xFF) << 24);
+							j += 4;
+							float asFloat = Float.intBitsToFloat(asInt);
+							line[i] = asFloat;
+
+						}
+						file.data.put(currentLine, 0, line);
+						points ++;
+						currentLine++;
+					}
+					System.out.println("Nombre de points : " + points);
+
 				}
 				in.close();
 
