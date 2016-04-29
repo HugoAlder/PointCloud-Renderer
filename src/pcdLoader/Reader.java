@@ -68,7 +68,7 @@ public class Reader {
 				}
 			}
 
-			// Reading the data in ASCII or in binary
+			// Reading the data in ASCII
 
 			if (file.datatype.equals("ascii")) {
 				while ((sCurrentLine = br.readLine()) != null) {
@@ -76,16 +76,23 @@ public class Reader {
 					file.data.put(currentLine, 0, StringArraytoFloatArray(words));
 					currentLine++;
 				}
+				
+			// Reading the data in binary. Need to start after the header	
+				
 			} else if (file.datatype.equals("binary")) {
-
 				int readBytes;
-				int points = 0;
+				
+				//String line = br.readLine();
+				
+				
+				float[] line = new float[4];
 				byte[] bytes = new byte[1024];
 				FileInputStream in = new FileInputStream(file);
+				
 				while ((readBytes = in.read(bytes)) != -1) {
 					int j = 0;
 					while(j < 1024) {
-						float[] line = new float[4];
+						line = new float[4];
 						for (int i = 0; i < 4; i++) {
 							int asInt = (bytes[j] & 0xFF) | ((bytes[j + 1] & 0xFF) << 8) | ((bytes[j + 2] & 0xFF) << 16)
 									| ((bytes[j + 3] & 0xFF) << 24);
@@ -95,14 +102,12 @@ public class Reader {
 
 						}
 						file.data.put(currentLine, 0, line);
-						points ++;
 						currentLine++;
-					}
-					System.out.println("Nombre de points : " + points);
-
+					}	
 				}
 				in.close();
-
+				file.data.submat(256, file.data.rows(), 0, 3);
+				System.out.println("Number of points : " + file.data.rows());
 			}
 
 			br.close();
