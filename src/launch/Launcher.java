@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
@@ -19,14 +20,13 @@ import gl.Viewer;
 import options.HUD;
 import pcdLoader.Finder;
 import pcdLoader.PCDFile;
-import pcdLoader.Reader;
 
 public class Launcher {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Finder.setLookAndFeel();
-		// PCDFile file = Finder.findFile();
-		PCDFile file = Reader.readFile("res/bunny.pcd");
+		PCDFile file = Finder.findFile();
+		//PCDFile file = Reader.readFile("res/bunny.pcd");
 
 		GLProfile.initSingleton();
 		GLProfile glp = GLProfile.getDefault();
