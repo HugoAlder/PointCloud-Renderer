@@ -1,11 +1,9 @@
 package pcdLoader;
 
 import java.io.BufferedReader;
-
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import org.opencv.core.CvType;
@@ -25,7 +23,7 @@ public class Reader {
 			BufferedReader br = new BufferedReader(new FileReader(filepath));
 
 			String sCurrentLine;
-			for (int i = 0; i < 11; i++) {
+			while (file.datatype == null) {
 				sCurrentLine = br.readLine();
 				String[] words = sCurrentLine.trim().split(" ");
 				String firstWord = words[0].toUpperCase();
@@ -62,13 +60,23 @@ public class Reader {
 					break;
 				case "DATA":
 					file.datatype = words[1];
-					file.data = new Mat(file.points, file.fields.length, CvType.CV_32FC1);
+					if (file.datatype.equals("ascii")) {
+						file.data = new Mat(file.points, file.fields.length, CvType.CV_32FC1);
+					} else if (file.datatype.equals("binary")) {
+
+						// 256 being the size of the header. We can't skip it so
+						// we have to male room for it in the matrix. We'll
+						// later subdivide the matrix.
+
+						file.data = new Mat(file.points + 256, file.fields.length, CvType.CV_32FC1);
+					}
+
 					break;
 
 				}
 			}
 
-			// Reading the data in ASCII
+			// Reading the data in ASCII.
 
 			if (file.datatype.equals("ascii")) {
 				while ((sCurrentLine = br.readLine()) != null) {
@@ -76,41 +84,47 @@ public class Reader {
 					file.data.put(currentLine, 0, StringArraytoFloatArray(words));
 					currentLine++;
 				}
-				
-			// Reading the data in binary. Need to start after the header	
-				
-			} else if (file.datatype.equals("binary")) {
-				int readBytes;
-				
-				//String line = br.readLine();
-				
-				
-				float[] line = new float[4];
-				byte[] bytes = new byte[1024];
+
+				br.close();
+
+				System.out.println("Number of points : " + file.data.rows());
+
+			}
+
+			// Reading the data in binary. Need to start after the header. For
+			// now works with 4 bytes (size) data only.
+
+			else if (file.datatype.equals("binary")) {
+
+				int size = file.size[0];
+				byte[] buffer = new byte[1024];
+				float[] line = new float[size];
 				FileInputStream in = new FileInputStream(file);
-				
-				while ((readBytes = in.read(bytes)) != -1) {
+
+				while ((in.read(buffer)) != -1) {
 					int j = 0;
-					while(j < 1024) {
-						line = new float[4];
-						for (int i = 0; i < 4; i++) {
-							int asInt = (bytes[j] & 0xFF) | ((bytes[j + 1] & 0xFF) << 8) | ((bytes[j + 2] & 0xFF) << 16)
-									| ((bytes[j + 3] & 0xFF) << 24);
-							j += 4;
+					while (j < 1024) {
+						line = new float[size];
+						for (int i = 0; i < size; i++) {
+							int asInt = (buffer[j] & 0xFF) | ((buffer[j + 1] & 0xFF) << 8)
+									| ((buffer[j + 2] & 0xFF) << 16) | ((buffer[j + 3] & 0xFF) << 24);
+							j += size;
 							float asFloat = Float.intBitsToFloat(asInt);
 							line[i] = asFloat;
-
 						}
 						file.data.put(currentLine, 0, line);
 						currentLine++;
-					}	
+					}
 				}
 				in.close();
-				file.data.submat(256, file.data.rows(), 0, 3);
+
+				// Removing the header by subdividing the matrix.
+
+				file.data = file.data.submat(256, file.data.rows(), 0, 3);
+				System.out.println("CurrentLine value : " + currentLine);
 				System.out.println("Number of points : " + file.data.rows());
 			}
 
-			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -33,7 +33,7 @@ public class Launcher {
 		GLCapabilities caps = new GLCapabilities(glp);
 		GLJPanel glPanel = new GLJPanel(caps);
 
-		JFrame frame = new JFrame("JOGL Program");
+		JFrame frame = new JFrame("PointCloud Renderer");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
 
