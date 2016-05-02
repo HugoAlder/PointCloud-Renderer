@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import org.opencv.core.CvType;
@@ -97,25 +98,36 @@ public class Reader {
 			else if (file.datatype.equals("binary")) {
 
 				int size = file.size[0];
-				byte[] buffer = new byte[1024];
+				byte[] buffer = new byte[16];
 				float[] line = new float[size];
 				FileInputStream in = new FileInputStream(file);
 
+				/*
+				 * while ((in.read(buffer)) != -1) { int j = 0; while (j < 1024)
+				 * { line = new float[size]; for (int i = 0; i < size; i++) {
+				 * int asInt = (buffer[j] & 0xff) | ((buffer[j + 1] & 0xff) <<
+				 * 8) | ((buffer[j + 2] & 0xff) << 16) | ((buffer[j + 3] & 0xff)
+				 * << 24); j += size; float asFloat =
+				 * Float.intBitsToFloat(asInt); line[i] = asFloat; }
+				 * file.data.put(currentLine, 0, line); currentLine++; } }
+				 */
+				
 				while ((in.read(buffer)) != -1) {
-					int j = 0;
-					while (j < 1024) {
-						line = new float[size];
-						for (int i = 0; i < size; i++) {
-							int asInt = (buffer[j] & 0xFF) | ((buffer[j + 1] & 0xFF) << 8)
-									| ((buffer[j + 2] & 0xFF) << 16) | ((buffer[j + 3] & 0xFF) << 24);
-							j += size;
-							float asFloat = Float.intBitsToFloat(asInt);
-							line[i] = asFloat;
+					int k = 0;
+					while(k < 16) {
+						byte[] subBuffer = new byte[4];
+						for(int l = 0; l < 4; l++) {
+							subBuffer[l] = buffer[k + l];
 						}
-						file.data.put(currentLine, 0, line);
-						currentLine++;
+						ByteBuffer wrapped = ByteBuffer.wrap(subBuffer);
+						float asFloat = wrapped.getFloat();
+						line[k/4] = asFloat;
+						k += 4;
 					}
+					file.data.put(currentLine, 0, line); 
+					currentLine++;
 				}
+
 				in.close();
 
 				// Removing the header by subdividing the matrix.
