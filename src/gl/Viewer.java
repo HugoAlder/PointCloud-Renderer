@@ -41,6 +41,8 @@ public class Viewer implements GLEventListener {
 	@Override
 	public void display(GLAutoDrawable drawable) {
 
+		Viewer.frame.setTitle("FPS: " + (int) drawable.getAnimator().getLastFPS());
+
 		gl = drawable.getGL().getGL2();
 
 		if (!whiteBackground)
@@ -107,6 +109,7 @@ public class Viewer implements GLEventListener {
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		glu = new GLU();
+		drawable.getAnimator().setUpdateFPSFrames(20, null);
 	}
 
 	@Override

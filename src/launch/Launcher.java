@@ -71,7 +71,7 @@ public class Launcher {
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-
+		
 		FPSAnimator animator = new FPSAnimator(glPanel, 60);
 		animator.start();
 

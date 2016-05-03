@@ -9,7 +9,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.util.ArrayList;
 
 import javax.swing.SwingUtilities;
 
@@ -33,8 +32,6 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 		Viewer.zoom += 0.05f * e.getWheelRotation();
 		if (Viewer.zoom < 0.05)
 			Viewer.zoom = 0.05;
-		else if (Viewer.zoom > 2.0)
-			Viewer.zoom = 2.0;
 	}
 
 	/*

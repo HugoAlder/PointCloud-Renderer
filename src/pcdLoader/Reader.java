@@ -112,7 +112,7 @@ public class Reader {
 				while ((bytesRead = in.read(buffer)) != -1) {
 					int k = 0;
 					while (k < bytesRead) {
-						byte[] subBuffer = new byte[file.size[k/lineSize]];
+						byte[] subBuffer = new byte[file.size[k / lineSize]];
 						for (int l = 0; l < subBuffer.length; l++) {
 							subBuffer[l] = buffer[k + l];
 						}
