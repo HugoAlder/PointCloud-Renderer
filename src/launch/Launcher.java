@@ -26,7 +26,10 @@ public class Launcher {
 	public static void main(String[] args) throws IOException {
 		Finder.setLookAndFeel();
 		PCDFile file = Finder.findFile();
-		//PCDFile file = Reader.readFile("res/bunny.pcd");
+		// PCDFile file = Reader.readFile("res/bunny.pcd");
+
+		if (file == null)
+			return;
 
 		GLProfile.initSingleton();
 		GLProfile glp = GLProfile.getDefault();
