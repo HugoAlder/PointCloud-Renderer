@@ -66,7 +66,7 @@ public class Reader {
 					} else if (file.datatype.equals("binary")) {
 
 						// 256 being the size of the header. We can't skip it so
-						// we have to male room for it in the matrix. We'll
+						// we have to make room for it in the matrix. We'll
 						// later subdivide the matrix.
 
 						file.data = new Mat(file.points + 256, file.fields.length, CvType.CV_32FC1);
@@ -92,42 +92,40 @@ public class Reader {
 
 			}
 
-			// Reading the data in binary. Need to start after the header. For
-			// now works with 4 bytes (size) data only.
+			// Reading the data in binary. Need to start after the header.
 
 			else if (file.datatype.equals("binary")) {
 
-				int size = file.size[0];
-				byte[] buffer = new byte[16];
-				float[] line = new float[size];
+				int lineSize = file.size.length;
+				float[] line = new float[lineSize];
+				System.out.println("Size of a line : " + lineSize);
+				int lineSizeInBytes = 0;
+				for (int i = 0; i < lineSize; i++) {
+					lineSizeInBytes += file.size[i];
+				}
+				System.out.println("Size of a line in bytes : " + lineSizeInBytes);
+				byte[] buffer = new byte[lineSizeInBytes];
 				FileInputStream in = new FileInputStream(file);
+				int bytesRead = 0;
+				int tmp = 0;
 
-				/*
-				 * while ((in.read(buffer)) != -1) { int j = 0; while (j < 1024)
-				 * { line = new float[size]; for (int i = 0; i < size; i++) {
-				 * int asInt = (buffer[j] & 0xff) | ((buffer[j + 1] & 0xff) <<
-				 * 8) | ((buffer[j + 2] & 0xff) << 16) | ((buffer[j + 3] & 0xff)
-				 * << 24); j += size; float asFloat =
-				 * Float.intBitsToFloat(asInt); line[i] = asFloat; }
-				 * file.data.put(currentLine, 0, line); currentLine++; } }
-				 */
-				
-				while ((in.read(buffer)) != -1) {
+				while ((bytesRead = in.read(buffer)) != -1) {
 					int k = 0;
-					while(k < 16) {
-						byte[] subBuffer = new byte[4];
-						for(int l = 0; l < 4; l++) {
+					while (k < bytesRead) {
+						byte[] subBuffer = new byte[file.size[k/lineSize]];
+						for (int l = 0; l < subBuffer.length; l++) {
 							subBuffer[l] = buffer[k + l];
 						}
 						ByteBuffer wrapped = ByteBuffer.wrap(subBuffer);
 						float asFloat = wrapped.getFloat();
-						line[k/4] = asFloat;
-						k += 4;
+						line[k / lineSize] = asFloat;
+						k += subBuffer.length;
 					}
-					file.data.put(currentLine, 0, line); 
+					file.data.put(currentLine, 0, line);
+					tmp = bytesRead;
 					currentLine++;
 				}
-
+				System.out.println("Last bytesRead : " + tmp);
 				in.close();
 
 				// Removing the header by subdividing the matrix.
