@@ -10,11 +10,14 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.geom.Area;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JColorChooser;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -41,6 +44,7 @@ public class HUD extends JPanel {
 	private JLabel optionsShow = new JLabel();
 	private JLabel colorBackground = new JLabel();
 	private JLabel fullScreen = new JLabel();
+	private JLabel colorChooser = new JLabel();
 
 	public HUD() {
 		this.areOptionsOpen = false;
@@ -133,7 +137,7 @@ public class HUD extends JPanel {
 		mouseOverText.setHorizontalAlignment(SwingConstants.CENTER);
 		mouseOverText.setVerticalAlignment(SwingConstants.CENTER);
 
-		colorBackground = createOption(150, 45, Viewer.whiteBackground, "Change background color");
+		colorBackground = createOption(150, 45, null, "Change background color");
 		colorBackground.setBackground(Viewer.whiteBackground ? Color.WHITE : Color.BLACK);
 		colorBackground.addMouseListener(new MouseAdapter() {
 
@@ -177,12 +181,33 @@ public class HUD extends JPanel {
 
 		});
 
+		colorChooser = createOption(375, 45, null, "Change points color");
+		colorChooser.setBackground(new Color(28, 138, 219));
+		colorChooser.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (!Viewer.isColorFrameOpen) {
+					ColorChanger colorFrame = new ColorChanger();
+					colorFrame.addWindowListener(new WindowAdapter() {
+
+						@Override
+						public void windowClosing(WindowEvent e) {
+							colorChooser.setBackground(Viewer.forcedColor);
+						}
+					});
+				}
+			}
+
+		});
+
 		add(options);
 		add(home);
 		add(screenshot);
 		add(colorBackground);
 		add(optionsShow);
 		add(fullScreen);
+		add(colorChooser);
 		add(mouseOverText);
 
 		closeOptionsMenu();

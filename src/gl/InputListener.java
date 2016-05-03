@@ -156,7 +156,8 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 			}
 			break;
 		case KeyEvent.VK_F2:
-			new ColorChanger();
+			if (!Viewer.isColorFrameOpen)
+				new ColorChanger();
 			break;
 		case KeyEvent.VK_F3:
 			Viewer.resetColor();

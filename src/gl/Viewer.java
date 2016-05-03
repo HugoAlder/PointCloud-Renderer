@@ -22,6 +22,7 @@ public class Viewer implements GLEventListener {
 	private Mat pointCloud;
 	public static boolean whiteBackground = false;
 	public static Color forcedColor = null;
+	public static boolean isColorFrameOpen = false;
 
 	private GL2 gl;
 	private GLU glu;
@@ -32,7 +33,7 @@ public class Viewer implements GLEventListener {
 	public static float xRotation, yRotation;
 
 	public Viewer(JFrame frame, PCDFile file) {
-		this.frame = frame;
+		Viewer.frame = frame;
 		this.file = file;
 		pointCloud = file.getData();
 	}
