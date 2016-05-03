@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -47,7 +48,11 @@ public class ScreenShot {
 
 	private static File getNextScreenFile() {
 
-		String fileName = "screenshot_" + getSystemTime(false);
+		File directory = new File("screenshots/");
+		if (!directory.exists())
+			directory.mkdir();
+
+		String fileName = "screenshots/screenshot_" + getSystemTime(false);
 		File imageToSave = new File(fileName + ".png");
 		int duplicate = 0;
 		while (imageToSave.exists()) {
