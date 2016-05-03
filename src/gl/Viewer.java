@@ -109,7 +109,7 @@ public class Viewer implements GLEventListener {
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		glu = new GLU();
-		drawable.getAnimator().setUpdateFPSFrames(20, null);
+		drawable.getAnimator().setUpdateFPSFrames(40, null);
 	}
 
 	@Override
