@@ -230,6 +230,7 @@ public class HUD extends JPanel {
 
 			@Override
 			public void mouseExited(MouseEvent e) {
+				mouseOverText.setText("");
 				mouseOverText.setVisible(false);
 			}
 
@@ -262,11 +263,11 @@ public class HUD extends JPanel {
 		areOptionsOpen = true;
 		options.setIcon(crossImage);
 		for (Component c : getComponents()) {
-			if (c != options)
-				c.setVisible(true);
+			c.setVisible(true);
 		}
 		home.setVisible(false);
 		screenshot.setVisible(false);
+		mouseOverText.setVisible(false);
 	}
 
 	@Override

@@ -7,7 +7,6 @@ import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
