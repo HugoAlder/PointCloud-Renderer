@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 
 import org.opencv.core.CvType;
@@ -69,7 +70,7 @@ public class Reader {
 						// we have to make room for it in the matrix. We'll
 						// later subdivide the matrix.
 
-						file.data = new Mat(file.points + 256, file.fields.length, CvType.CV_32FC1);
+						file.data = new Mat(file.points + 14, file.fields.length, CvType.CV_32FC1);
 					}
 
 					break;
@@ -96,43 +97,32 @@ public class Reader {
 
 			else if (file.datatype.equals("binary")) {
 
-				int lineSize = file.size.length;
-				float[] line = new float[lineSize];
-				System.out.println("Size of a line : " + lineSize);
-				int lineSizeInBytes = 0;
-				for (int i = 0; i < lineSize; i++) {
-					lineSizeInBytes += file.size[i];
-				}
-				System.out.println("Size of a line in bytes : " + lineSizeInBytes);
-				byte[] buffer = new byte[lineSizeInBytes];
-				FileInputStream in = new FileInputStream(file);
-				int bytesRead = 0;
-				int tmp = 0;
+				FileInputStream in = new FileInputStream(filepath);
 
-				while ((bytesRead = in.read(buffer)) != -1) {
-					int k = 0;
-					while (k < bytesRead) {
-						byte[] subBuffer = new byte[file.size[k/lineSize]];
-						for (int l = 0; l < subBuffer.length; l++) {
-							subBuffer[l] = buffer[k + l];
-						}
-						ByteBuffer wrapped = ByteBuffer.wrap(subBuffer);
-						float asFloat = wrapped.getFloat();
-						line[k / lineSize] = asFloat;
-						k += subBuffer.length;
+				int tmp = 0;
+				currentLine = 0;
+				int size = file.size[0];
+				byte[] b = new byte[size];
+				int dimensionsAndRgb = file.fields.length;
+				float[] line = new float[dimensionsAndRgb];
+
+				while (in.read(b) != -1) {
+					float value = ByteBuffer.wrap(b).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+					line[tmp] = value;
+					if (tmp == dimensionsAndRgb - 1) {
+						file.data.put(currentLine, 0, line);
+						tmp = -1;
+						currentLine++;
 					}
-					file.data.put(currentLine, 0, line);
-					tmp = bytesRead;
-					currentLine++;
+					tmp++;
+					size = file.size[tmp];
+					b = new byte[size];
 				}
-				System.out.println("Last bytesRead : " + tmp);
+
+				file.data = file.data.submat(14, file.data.rows(), 0, 3);
+
 				in.close();
 
-				// Removing the header by subdividing the matrix.
-
-				file.data = file.data.submat(256, file.data.rows(), 0, 3);
-				System.out.println("CurrentLine value : " + currentLine);
-				System.out.println("Number of points : " + file.data.rows());
 			}
 
 		} catch (IOException e) {
