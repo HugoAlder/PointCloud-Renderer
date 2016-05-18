@@ -28,10 +28,15 @@ public class ColorChanger extends JFrame {
 		addWindowListener(new WindowAdapter() {
 
 			@Override
+			public void windowOpened(WindowEvent e) {
+				Viewer.isColorFrameOpen = true;
+			}
+			
+			@Override
 			public void windowClosing(WindowEvent e) {
 				Color c = colorChooser.getColor();
 				Viewer.forceColor(c);
-
+				Viewer.isColorFrameOpen = false;
 			}
 		});
 	}

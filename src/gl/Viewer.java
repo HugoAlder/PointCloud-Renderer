@@ -22,6 +22,7 @@ public class Viewer implements GLEventListener {
 	private Mat pointCloud;
 	public static boolean whiteBackground = false;
 	public static Color forcedColor = null;
+	public static boolean isColorFrameOpen = false;
 
 	private GL2 gl;
 	private GLU glu;
@@ -32,13 +33,15 @@ public class Viewer implements GLEventListener {
 	public static float xRotation, yRotation;
 
 	public Viewer(JFrame frame, PCDFile file) {
-		this.frame = frame;
+		Viewer.frame = frame;
 		this.file = file;
 		pointCloud = file.getData();
 	}
 
 	@Override
 	public void display(GLAutoDrawable drawable) {
+
+		Viewer.frame.setTitle("FPS: " + (int) drawable.getAnimator().getLastFPS());
 
 		gl = drawable.getGL().getGL2();
 
@@ -106,6 +109,7 @@ public class Viewer implements GLEventListener {
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		glu = new GLU();
+		drawable.getAnimator().setUpdateFPSFrames(40, null);
 	}
 
 	@Override

@@ -26,7 +26,10 @@ public class Launcher {
 	public static void main(String[] args) throws IOException {
 		Finder.setLookAndFeel();
 		PCDFile file = Finder.findFile();
-		//PCDFile file = Reader.readFile("res/bunny.pcd");
+		// PCDFile file = Reader.readFile("res/bunny.pcd");
+
+		if (file == null)
+			return;
 
 		GLProfile.initSingleton();
 		GLProfile glp = GLProfile.getDefault();
@@ -69,7 +72,7 @@ public class Launcher {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 
-		FPSAnimator animator = new FPSAnimator(glPanel, 60);
+		FPSAnimator animator = new FPSAnimator(glPanel, 100);
 		animator.start();
 
 		glPanel.requestFocus();
