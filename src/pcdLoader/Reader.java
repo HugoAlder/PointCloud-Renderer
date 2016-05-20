@@ -23,6 +23,7 @@ public class Reader {
 		try {
 
 			BufferedReader br = new BufferedReader(new FileReader(filepath));
+			br.mark(1000);
 
 			String sCurrentLine;
 			while (file.datatype == null) {
@@ -70,7 +71,7 @@ public class Reader {
 						// we have to make room for it in the matrix. We'll
 						// later subdivide the matrix.
 
-						file.data = new Mat(file.points + 14, file.fields.length, CvType.CV_32FC1);
+						file.data = new Mat(file.points, file.fields.length, CvType.CV_32FC1);
 					}
 
 					break;
@@ -97,7 +98,20 @@ public class Reader {
 
 			else if (file.datatype.equals("binary")) {
 
-				FileInputStream in = new FileInputStream(filepath);
+				FileInputStream in = new FileInputStream(filepath);			
+				br.reset();				
+				String s = "";
+				String tmpS = "";	
+				tmpS = br.readLine();
+				
+				while(tmpS.length() > 4 && !(tmpS.substring(0, 4).equals("DATA"))) {
+					s += tmpS + "\n";
+					tmpS = br.readLine();
+				}
+				
+				s += tmpS + "\n";			
+				byte[] header = s.getBytes("UTF-8");
+				in.read(header);
 
 				int tmp = 0;
 				currentLine = 0;
@@ -118,8 +132,6 @@ public class Reader {
 					size = file.size[tmp];
 					b = new byte[size];
 				}
-
-				file.data = file.data.submat(14, file.data.rows(), 0, 3);
 
 				in.close();
 
