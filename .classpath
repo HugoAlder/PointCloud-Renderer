@@ -6,5 +6,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OpenGL"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JOGL-Portable"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Opencv 3.1"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
