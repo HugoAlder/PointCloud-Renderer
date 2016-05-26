@@ -12,7 +12,6 @@ import java.awt.event.MouseWheelListener;
 
 import javax.swing.SwingUtilities;
 
-import launch.Launcher;
 import options.ColorChanger;
 import screenShot.ScreenShot;
 
