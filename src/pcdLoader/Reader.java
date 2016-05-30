@@ -14,7 +14,7 @@ import org.opencv.core.Mat;
 public class Reader {
 
 	public static PCDFile readFile(String filepath) {
-		
+
 		System.loadLibrary("opencv_java310");
 		PCDFile file = new PCDFile(filepath);
 		file.data = null;
@@ -66,11 +66,6 @@ public class Reader {
 					if (file.datatype.equals("ascii")) {
 						file.data = new Mat(file.points, file.fields.length, CvType.CV_32FC1);
 					} else if (file.datatype.equals("binary")) {
-
-						// 256 being the size of the header. We can't skip it so
-						// we have to make room for it in the matrix. We'll
-						// later subdivide the matrix.
-
 						file.data = new Mat(file.points, file.fields.length, CvType.CV_32FC1);
 					}
 
@@ -98,18 +93,18 @@ public class Reader {
 
 			else if (file.datatype.equals("binary")) {
 
-				FileInputStream in = new FileInputStream(filepath);			
-				br.reset();				
+				FileInputStream in = new FileInputStream(filepath);
+				br.reset();
 				String s = "";
-				String tmpS = "";	
+				String tmpS = "";
 				tmpS = br.readLine();
-				
-				while(tmpS.length() > 4 && !(tmpS.substring(0, 4).equals("DATA"))) {
+
+				while (tmpS.length() > 4 && !(tmpS.substring(0, 4).equals("DATA"))) {
 					s += tmpS + "\n";
 					tmpS = br.readLine();
 				}
-				
-				s += tmpS + "\n";			
+
+				s += tmpS + "\n";
 				byte[] header = s.getBytes("UTF-8");
 				in.read(header);
 
@@ -121,7 +116,16 @@ public class Reader {
 				float[] line = new float[dimensionsAndRgb];
 
 				while (in.read(b) != -1) {
-					float value = ByteBuffer.wrap(b).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+					float value = 0f;
+					switch(file.size[tmp]) {
+					case 2 :
+						value = (float) ByteBuffer.wrap(b).order(ByteOrder.LITTLE_ENDIAN).getShort(); break;
+					case 4 :
+						value = ByteBuffer.wrap(b).order(ByteOrder.LITTLE_ENDIAN).getFloat(); break;
+					case 8 :
+						value = (float) ByteBuffer.wrap(b).order(ByteOrder.LITTLE_ENDIAN).getDouble(); break;
+					}
+					
 					line[tmp] = value;
 					if (tmp == dimensionsAndRgb - 1) {
 						file.data.put(currentLine, 0, line);
