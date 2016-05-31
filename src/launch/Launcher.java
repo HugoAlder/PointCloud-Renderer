@@ -20,13 +20,14 @@ import gl.Viewer;
 import options.HUD;
 import pcdLoader.Finder;
 import pcdLoader.PCDFile;
+import pcdLoader.Reader;
 
 public class Launcher {
 
 	public static void main(String[] args) throws IOException {
 		Finder.setLookAndFeel();
-		PCDFile file = Finder.findFile();
-		// PCDFile file = Reader.readFile("res/bunny.pcd");
+		// PCDFile file = Finder.findFile();
+		PCDFile file = Reader.readFile("res/bunny.pcd");
 
 		if (file == null)
 			return;

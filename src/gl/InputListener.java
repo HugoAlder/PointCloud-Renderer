@@ -171,7 +171,7 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 			else
 				Viewer.setFullScreen();
 			break;
-
+			
 		}
 	}
 

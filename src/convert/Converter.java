@@ -11,20 +11,22 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.NoSuchAlgorithmException;
 
+import javax.swing.JFrame;
+
+import pcdLoader.PCDFile;
+
 public class Converter {
 
-	public boolean asciiToBinary(String filePath, String encoding) throws IOException, NoSuchAlgorithmException {
+	public static boolean asciiToBinary(PCDFile file, int size) throws IOException, NoSuchAlgorithmException {
 
 		int bufferSize;
 		short shortValue = new Short((short) 0);
 		float floatValue = new Float(0f);
 		double doubleValue = new Double(0);
 
-		File file = new File(filePath);
-
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String oldName = file.getName();
-		File newFile = new File(oldName.substring(0, oldName.length() - 4) + "_copy.pcd");
+		File newFile = new File("res/" + oldName.substring(0, oldName.length() - 4) + "_copy.pcd");
 		newFile.createNewFile();
 		String tmpS = "";
 		String s = "";
@@ -33,22 +35,22 @@ public class Converter {
 
 		while (tmpS.length() > 4 && !(tmpS.substring(0, 4).equals("DATA"))) {
 			if (tmpS.substring(0, 4).equals("SIZE")) {
-				tmpS = "SIZE ";
 				String[] words = tmpS.trim().split(" ");
+				tmpS = "SIZE";
 				int dimensions = words.length - 1;
 				String encodingSymbol = "";
-				switch (encoding) {
-				case "short":
-					encodingSymbol = "2 ";
+				switch (size) {
+				case 2:
+					encodingSymbol = " 2";
 					break;
-				case "float":
-					encodingSymbol = "4 ";
+				case 4:
+					encodingSymbol = " 4";
 					break;
-				case "double":
-					encodingSymbol = "8 ";
+				case 8:
+					encodingSymbol = " 8";
 					break;
 				}
-				for(int i = 0; i<dimensions; i++) {
+				for (int i = 0; i < dimensions; i++) {
 					tmpS += encodingSymbol;
 				}
 			}
@@ -72,20 +74,20 @@ public class Converter {
 			String[] words = line.trim().split(" ");
 			byte[] buffer = new byte[0];
 			for (int i = 0; i < words.length; i++) {
-				switch (encoding) {
-				case "short":
+				switch (size) {
+				case 2:
 					shortValue = Short.parseShort(words[i]);
 					bufferSize = 2;
 					buffer = new byte[bufferSize];
 					ByteBuffer.wrap(buffer, 0, bufferSize).order(ByteOrder.LITTLE_ENDIAN).putShort(shortValue);
 					break;
-				case "float":
+				case 4:
 					floatValue = Float.parseFloat(words[i]);
 					bufferSize = 4;
 					buffer = new byte[bufferSize];
 					ByteBuffer.wrap(buffer, 0, bufferSize).order(ByteOrder.LITTLE_ENDIAN).putFloat(floatValue);
 					break;
-				case "double":
+				case 8:
 					doubleValue = Double.parseDouble(words[i]);
 					bufferSize = 8;
 					buffer = new byte[bufferSize];
@@ -105,5 +107,5 @@ public class Converter {
 
 		return true;
 	}
-
+	
 }

@@ -18,8 +18,8 @@ public class Viewer implements GLEventListener {
 
 	public static JFrame frame;
 
-	private PCDFile file;
-	private Mat pointCloud;
+	private static PCDFile file;
+	private static Mat pointCloud;
 	public static boolean whiteBackground = false;
 	public static Color forcedColor = null;
 	public static boolean isColorFrameOpen = false;
@@ -34,7 +34,7 @@ public class Viewer implements GLEventListener {
 
 	public Viewer(JFrame frame, PCDFile file) {
 		Viewer.frame = frame;
-		this.file = file;
+		Viewer.file = file;
 		pointCloud = file.getData();
 	}
 
@@ -175,6 +175,12 @@ public class Viewer implements GLEventListener {
 		zoom = 0.3;
 		x = 0.0;
 		y = 0.0;
+	}
+
+	public static void changeFile(PCDFile newFile) {
+		file = newFile;
+		pointCloud = file.getData();
+		resetValues();
 	}
 
 }
