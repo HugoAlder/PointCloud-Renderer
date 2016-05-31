@@ -12,16 +12,13 @@ import java.awt.event.MouseWheelListener;
 
 import javax.swing.SwingUtilities;
 
+import convert.Converter;
 import options.ColorChanger;
 import screenShot.ScreenShot;
 
 public class InputListener implements MouseWheelListener, MouseMotionListener, MouseListener, KeyListener {
 
 	private Point mousePreviousPosition;
-
-	public InputListener() {
-		Viewer.resetValues();
-	}
 
 	/*
 	 * MouseWheelListener

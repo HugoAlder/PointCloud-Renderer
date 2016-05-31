@@ -117,9 +117,8 @@ public class HUD extends JPanel {
 				try {
 					file = Finder.findFile();
 					if (file != null)
-						Converter.asciiToBinary(file, 4);
-					// TODO: Allow to use a different size
-				} catch (IOException | NoSuchAlgorithmException e1) {
+						Converter.openSizeSelector(file);
+				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
 			}

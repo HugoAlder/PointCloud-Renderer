@@ -36,6 +36,7 @@ public class Viewer implements GLEventListener {
 		Viewer.frame = frame;
 		Viewer.file = file;
 		pointCloud = file.getData();
+		resetValues();
 	}
 
 	@Override
