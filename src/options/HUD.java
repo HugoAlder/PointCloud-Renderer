@@ -13,6 +13,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Area;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -21,7 +23,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import convert.Converter;
 import gl.Viewer;
+import pcdLoader.Finder;
+import pcdLoader.PCDFile;
 import screenShot.ScreenShot;
 
 @SuppressWarnings("serial")
@@ -36,6 +41,10 @@ public class HUD extends JPanel {
 	private ImageIcon homeImage = new ImageIcon("res/images/home.png");
 	private JLabel screenshot = new JLabel();
 	private ImageIcon screenshotImage = new ImageIcon("res/images/screenshot.png");
+	private JLabel searchFile = new JLabel();
+	private ImageIcon searchImage = new ImageIcon("res/images/search.png");
+	private JLabel convert = new JLabel();
+	private ImageIcon convertImage = new ImageIcon("res/images/convert.png");
 
 	private JLabel mouseOverText = new JLabel();
 	private boolean optionsAlwaysShowed = true;
@@ -50,8 +59,7 @@ public class HUD extends JPanel {
 		setFocusable(false);
 		setOpaque(false);
 
-		options.setBounds(20, 20, 100, 100);
-		options.setFocusable(false);
+		options = createMenu(20, 20, gearImage);
 		options.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -60,71 +68,60 @@ public class HUD extends JPanel {
 				else
 					openOptionsMenu();
 			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				if (!optionsAlwaysShowed && !areOptionsOpen)
-					options.setIcon(gearImage);
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				if (!optionsAlwaysShowed && !areOptionsOpen)
-					options.setIcon(null);
-			}
 		});
 
-		home.setBounds(20, 140, 100, 100);
-		home.setFocusable(false);
-		home.setIcon(homeImage);
+		home = createMenu(20, 140, homeImage);
 		home.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				Viewer.resetValues();
 			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				if (!optionsAlwaysShowed && !areOptionsOpen)
-					home.setIcon(homeImage);
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				if (!optionsAlwaysShowed && !areOptionsOpen)
-					home.setIcon(null);
-			}
 		});
 
-		screenshot.setBounds(20, 260, 100, 100);
-		screenshot.setFocusable(false);
-		screenshot.setIcon(screenshotImage);
+		screenshot = createMenu(20, 260, screenshotImage);
 		screenshot.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				options.setVisible(false);
-				home.setVisible(false);
-				screenshot.setVisible(false);
+				hideHUD();
 				try {
 					ScreenShot.registerScreenShot(Viewer.frame);
 				} catch (AWTException e1) {
 					e1.printStackTrace();
 				}
-				options.setVisible(true);
-				home.setVisible(true);
-				screenshot.setVisible(true);
+				closeOptionsMenu();
 			}
+		});
 
+		searchFile = createMenu(20, 380, searchImage);
+		searchFile.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseEntered(MouseEvent e) {
-				if (!optionsAlwaysShowed && !areOptionsOpen)
-					screenshot.setIcon(screenshotImage);
+			public void mouseClicked(MouseEvent e) {
+				Finder.setLookAndFeel();
+				PCDFile file;
+				try {
+					file = Finder.findFile();
+					if (file != null)
+						Viewer.changeFile(file);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
+		});
 
+		convert = createMenu(20, 500, convertImage);
+		convert.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseExited(MouseEvent e) {
-				if (!optionsAlwaysShowed && !areOptionsOpen)
-					screenshot.setIcon(null);
+			public void mouseClicked(MouseEvent e) {
+				Finder.setLookAndFeel();
+				PCDFile file;
+				try {
+					file = Finder.findFile();
+					if (file != null)
+						Converter.asciiToBinary(file, 4);
+					// TODO: Allow to use a different size
+				} catch (IOException | NoSuchAlgorithmException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 
@@ -145,7 +142,7 @@ public class HUD extends JPanel {
 				colorBackground.setBackground(Viewer.whiteBackground ? Color.WHITE : Color.BLACK);
 				mouseOverText.setForeground(Viewer.whiteBackground ? Color.BLACK : Color.WHITE);
 				for (Component c : getComponents()) {
-					if (c != options && c != mouseOverText && c != home && c != screenshot)
+					if (c != options && c != mouseOverText && c != home && c != screenshot && c != searchFile)
 						((JComponent) c).setBorder(
 								BorderFactory.createLineBorder(Viewer.whiteBackground ? Color.BLACK : Color.WHITE, 4));
 				}
@@ -202,6 +199,8 @@ public class HUD extends JPanel {
 		add(options);
 		add(home);
 		add(screenshot);
+		add(searchFile);
+		add(convert);
 		add(colorBackground);
 		add(optionsShow);
 		add(fullScreen);
@@ -209,6 +208,28 @@ public class HUD extends JPanel {
 		add(mouseOverText);
 
 		closeOptionsMenu();
+	}
+
+	public JLabel createMenu(int x, int y, ImageIcon image) {
+		JLabel res = new JLabel();
+		res.setBounds(x, y, 100, 100);
+		res.setFocusable(false);
+		res.setIcon(image);
+		res.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if (!optionsAlwaysShowed && !areOptionsOpen)
+					res.setIcon(image);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				if (!optionsAlwaysShowed && !areOptionsOpen)
+					res.setIcon(null);
+			}
+		});
+
+		return res;
 	}
 
 	public JLabel createOption(int x, int y, Boolean value, String description) {
@@ -239,22 +260,35 @@ public class HUD extends JPanel {
 		return res;
 	}
 
+	public void hideHUD() {
+		home.setIcon(null);
+		screenshot.setIcon(null);
+		searchFile.setIcon(null);
+		convert.setIcon(null);
+	}
+
 	public void closeOptionsMenu() {
 		areOptionsOpen = false;
 		options.setIcon(gearImage);
 
 		for (Component c : getComponents()) {
-			if (c != options)
-				c.setVisible(false);
+			c.setVisible(false);
 		}
+		options.setVisible(true);
 		home.setVisible(true);
 		screenshot.setVisible(true);
+		searchFile.setVisible(true);
+		convert.setVisible(true);
 		if (optionsAlwaysShowed) {
 			home.setIcon(homeImage);
 			screenshot.setIcon(screenshotImage);
+			searchFile.setIcon(searchImage);
+			convert.setIcon(convertImage);
 		} else {
 			home.setIcon(null);
 			screenshot.setIcon(null);
+			searchFile.setIcon(null);
+			convert.setIcon(null);
 		}
 
 	}
@@ -267,6 +301,8 @@ public class HUD extends JPanel {
 		}
 		home.setVisible(false);
 		screenshot.setVisible(false);
+		searchFile.setVisible(false);
+		convert.setVisible(false);
 		mouseOverText.setVisible(false);
 	}
 
