@@ -141,7 +141,7 @@ public class HUD extends JPanel {
 				colorBackground.setBackground(Viewer.whiteBackground ? Color.WHITE : Color.BLACK);
 				mouseOverText.setForeground(Viewer.whiteBackground ? Color.BLACK : Color.WHITE);
 				for (Component c : getComponents()) {
-					if (c != options && c != mouseOverText && c != home && c != screenshot && c != searchFile)
+					if (c != options && c != mouseOverText && c != home && c != screenshot && c != searchFile && c != convert)
 						((JComponent) c).setBorder(
 								BorderFactory.createLineBorder(Viewer.whiteBackground ? Color.BLACK : Color.WHITE, 4));
 				}
