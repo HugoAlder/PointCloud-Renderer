@@ -13,8 +13,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Area;
+import java.io.File;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -34,17 +35,8 @@ public class HUD extends JPanel {
 
 	private boolean areOptionsOpen;
 
-	private JLabel options = new JLabel();
-	private ImageIcon gearImage = new ImageIcon("res/images/gear.png");
-	private ImageIcon crossImage = new ImageIcon("res/images/cross.png");
-	private JLabel home = new JLabel();
-	private ImageIcon homeImage = new ImageIcon("res/images/home.png");
-	private JLabel screenshot = new JLabel();
-	private ImageIcon screenshotImage = new ImageIcon("res/images/screenshot.png");
-	private JLabel searchFile = new JLabel();
-	private ImageIcon searchImage = new ImageIcon("res/images/search.png");
-	private JLabel convert = new JLabel();
-	private ImageIcon convertImage = new ImageIcon("res/images/convert.png");
+	private HashMap<String, JLabel> buttons = new HashMap<String, JLabel>();
+	private HashMap<String, ImageIcon> images = new HashMap<String, ImageIcon>();
 
 	private JLabel mouseOverText = new JLabel();
 	private boolean optionsAlwaysShowed = true;
@@ -54,13 +46,18 @@ public class HUD extends JPanel {
 	private JLabel colorChooser = new JLabel();
 
 	public HUD() {
+
+		File f = new File("res/images/");
+		for (String s : f.list())
+			images.put(s.substring(0, s.length() - 4), new ImageIcon("res/images/" + s));
+
 		this.areOptionsOpen = false;
 		setLayout(null);
 		setFocusable(false);
 		setOpaque(false);
 
-		options = createMenu(20, 20, gearImage);
-		options.addMouseListener(new MouseAdapter() {
+		createButton("options", "gear");
+		buttons.get("options").addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (areOptionsOpen)
@@ -70,16 +67,16 @@ public class HUD extends JPanel {
 			}
 		});
 
-		home = createMenu(20, 140, homeImage);
-		home.addMouseListener(new MouseAdapter() {
+		createButton("home");
+		buttons.get("home").addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				Viewer.resetValues();
 			}
 		});
 
-		screenshot = createMenu(20, 260, screenshotImage);
-		screenshot.addMouseListener(new MouseAdapter() {
+		createButton("screenshot");
+		buttons.get("screenshot").addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				hideHUD();
@@ -92,8 +89,8 @@ public class HUD extends JPanel {
 			}
 		});
 
-		searchFile = createMenu(20, 380, searchImage);
-		searchFile.addMouseListener(new MouseAdapter() {
+		createButton("search");
+		buttons.get("search").addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				Finder.setLookAndFeel();
@@ -108,8 +105,8 @@ public class HUD extends JPanel {
 			}
 		});
 
-		convert = createMenu(20, 500, convertImage);
-		convert.addMouseListener(new MouseAdapter() {
+		createButton("convert");
+		buttons.get("convert").addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				Finder.setLookAndFeel();
@@ -121,6 +118,14 @@ public class HUD extends JPanel {
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
+			}
+		});
+
+		createButton("location");
+		buttons.get("location").addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
 			}
 		});
 
@@ -141,7 +146,7 @@ public class HUD extends JPanel {
 				colorBackground.setBackground(Viewer.whiteBackground ? Color.WHITE : Color.BLACK);
 				mouseOverText.setForeground(Viewer.whiteBackground ? Color.BLACK : Color.WHITE);
 				for (Component c : getComponents()) {
-					if (c != options && c != mouseOverText && c != home && c != screenshot && c != searchFile && c != convert)
+					if (!buttons.containsValue(c) && c != mouseOverText)
 						((JComponent) c).setBorder(
 								BorderFactory.createLineBorder(Viewer.whiteBackground ? Color.BLACK : Color.WHITE, 4));
 				}
@@ -195,11 +200,8 @@ public class HUD extends JPanel {
 
 		});
 
-		add(options);
-		add(home);
-		add(screenshot);
-		add(searchFile);
-		add(convert);
+		for (String key : buttons.keySet())
+			add(buttons.get(key));
 		add(colorBackground);
 		add(optionsShow);
 		add(fullScreen);
@@ -209,16 +211,24 @@ public class HUD extends JPanel {
 		closeOptionsMenu();
 	}
 
-	public JLabel createMenu(int x, int y, ImageIcon image) {
+	public void createButton(String name) {
+		createButton(name, name);
+	}
+
+	public void createButton(String name, String image) {
 		JLabel res = new JLabel();
-		res.setBounds(x, y, 100, 100);
+
+		int y = 20;
+		y += 120 * buttons.size();
+
+		res.setBounds(20, y, 100, 100);
 		res.setFocusable(false);
-		res.setIcon(image);
+		res.setIcon(images.get(image));
 		res.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				if (!optionsAlwaysShowed && !areOptionsOpen)
-					res.setIcon(image);
+					res.setIcon(images.get(image));
 			}
 
 			@Override
@@ -228,7 +238,7 @@ public class HUD extends JPanel {
 			}
 		});
 
-		return res;
+		buttons.put(name, res);
 	}
 
 	public JLabel createOption(int x, int y, Boolean value, String description) {
@@ -260,48 +270,42 @@ public class HUD extends JPanel {
 	}
 
 	public void hideHUD() {
-		home.setIcon(null);
-		screenshot.setIcon(null);
-		searchFile.setIcon(null);
-		convert.setIcon(null);
+		for (String key : buttons.keySet())
+			if (key != "options")
+				buttons.get(key).setIcon(null);
 	}
 
 	public void closeOptionsMenu() {
 		areOptionsOpen = false;
-		options.setIcon(gearImage);
+		buttons.get("options").setIcon(images.get("gear"));
 
 		for (Component c : getComponents()) {
 			c.setVisible(false);
 		}
-		options.setVisible(true);
-		home.setVisible(true);
-		screenshot.setVisible(true);
-		searchFile.setVisible(true);
-		convert.setVisible(true);
+		for (String key : buttons.keySet())
+			buttons.get(key).setVisible(true);
+
 		if (optionsAlwaysShowed) {
-			home.setIcon(homeImage);
-			screenshot.setIcon(screenshotImage);
-			searchFile.setIcon(searchImage);
-			convert.setIcon(convertImage);
+			for (String key : buttons.keySet())
+				if (key != "options")
+					buttons.get(key).setIcon(images.get(key));
 		} else {
-			home.setIcon(null);
-			screenshot.setIcon(null);
-			searchFile.setIcon(null);
-			convert.setIcon(null);
+			for (String key : buttons.keySet())
+				if (key != "options")
+					buttons.get(key).setIcon(null);
 		}
 
 	}
 
 	public void openOptionsMenu() {
 		areOptionsOpen = true;
-		options.setIcon(crossImage);
+		buttons.get("options").setIcon(images.get("cross"));
 		for (Component c : getComponents()) {
 			c.setVisible(true);
 		}
-		home.setVisible(false);
-		screenshot.setVisible(false);
-		searchFile.setVisible(false);
-		convert.setVisible(false);
+		for (String key : buttons.keySet())
+			if (key != "options")
+				buttons.get(key).setVisible(false);
 		mouseOverText.setVisible(false);
 	}
 
