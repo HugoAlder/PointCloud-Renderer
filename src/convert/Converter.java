@@ -124,18 +124,19 @@ public class Converter {
 
 	public static void openSizeSelector(PCDFile file) {
 		JDialog frame = new JDialog(Viewer.frame);
+		frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		JPanel panel = new JPanel(null);
 		frame.setContentPane(panel);
 		panel.setPreferredSize(new Dimension(300, 200));
 		frame.setResizable(false);
 		panel.setBackground(new Color(238, 238, 238));
 
-		Integer[] choices = { 2, 4, 8 };
+		Integer[] choices = { 4, 8 };
 		JComboBox<Integer> sizeSelector = new JComboBox<Integer>(choices);
 		sizeSelector.setFont(new Font("arial", 0, 35));
 		sizeSelector.setBounds(10, 10, 100, 100);
 		sizeSelector.setFocusable(false);
-		sizeSelector.setSelectedIndex(1);
+		sizeSelector.setSelectedIndex(0);
 
 		JTextPane text = new JTextPane();
 		text.setText("Choose a size for the convertion");

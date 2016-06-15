@@ -96,7 +96,7 @@ public class HUD extends JPanel {
 				Finder.setLookAndFeel();
 				PCDFile file;
 				try {
-					file = Finder.findFile();
+					file = Finder.findFile("Select the PCD file to open");
 					if (file != null)
 						Viewer.changeFile(file);
 				} catch (IOException e1) {
@@ -112,7 +112,7 @@ public class HUD extends JPanel {
 				Finder.setLookAndFeel();
 				PCDFile file;
 				try {
-					file = Finder.findFile();
+					file = Finder.findFile("Select the PCD file to convert");
 					if (file != null)
 						Converter.openSizeSelector(file);
 				} catch (IOException e1) {
@@ -125,7 +125,7 @@ public class HUD extends JPanel {
 		buttons.get("location").addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
+				Viewer.openPositionSelector();
 			}
 		});
 
