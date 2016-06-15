@@ -26,9 +26,14 @@ public class Launcher {
 
 	public static void main(String[] args) throws IOException {
 		Finder.setLookAndFeel();
-		// PCDFile file = Finder.findFile();
-		PCDFile file = Reader.readFile("res/bunny.pcd");
 
+		PCDFile file;
+
+		file = Reader.readFile("res/bunny.pcd");
+		
+		if (file == null)
+			file = Finder.findFile("Select the PCD file to open");
+		
 		if (file == null)
 			return;
 

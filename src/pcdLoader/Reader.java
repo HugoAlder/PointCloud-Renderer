@@ -17,6 +17,9 @@ public class Reader {
 
 		System.loadLibrary("opencv_java310");
 		PCDFile file = new PCDFile(filepath);
+		if(!file.exists())
+			return null;
+		
 		file.data = null;
 		int currentLine = 0;
 

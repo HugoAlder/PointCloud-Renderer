@@ -20,9 +20,8 @@ public class Finder extends JFrame {
 			e.printStackTrace();
 		}
 	}
-
-	public static PCDFile findFile() throws IOException {
-
+	
+	public static PCDFile findFile(String windowTitle) throws IOException{
 		PCDFile chosenFile = null;
 		JFileChooser fc = new JFileChooser(System.getProperty("user.dir") + "/res");
 		fc.setDialogTitle("Select your PCD file");

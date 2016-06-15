@@ -12,7 +12,6 @@ import java.awt.event.MouseWheelListener;
 
 import javax.swing.SwingUtilities;
 
-import convert.Converter;
 import options.ColorChanger;
 import screenShot.ScreenShot;
 
@@ -168,7 +167,7 @@ public class InputListener implements MouseWheelListener, MouseMotionListener, M
 			else
 				Viewer.setFullScreen();
 			break;
-			
+
 		}
 	}
 
