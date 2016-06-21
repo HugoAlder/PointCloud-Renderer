@@ -24,7 +24,7 @@ public class Finder extends JFrame {
 	public static PCDFile findFile(String windowTitle) throws IOException{
 		PCDFile chosenFile = null;
 		JFileChooser fc = new JFileChooser(System.getProperty("user.dir") + "/res");
-		fc.setDialogTitle("Select your PCD file");
+		fc.setDialogTitle(windowTitle);
 		Dimension d = new Dimension(800, 600);
 		fc.setPreferredSize(d);
 		FileFilter filter = new FileNameExtensionFilter("PCD files", "pcd");

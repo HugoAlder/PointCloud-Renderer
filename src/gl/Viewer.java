@@ -82,9 +82,9 @@ public class Viewer implements GLEventListener {
 			bottom /= aspect;
 			top /= aspect;
 		}
-
+		
 		gl.glOrtho(left, right, bottom, top, 1, -1);
-
+		
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 
 		gl.glLoadIdentity();
