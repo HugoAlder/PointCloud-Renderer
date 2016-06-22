@@ -9,6 +9,12 @@ import javax.swing.JFrame;
 
 import gl.Viewer;
 
+/**
+ * Class used to change the color of the point cloud.
+ * @author Hugo
+ *
+ */
+
 @SuppressWarnings("serial")
 public class ColorChanger extends JFrame {
 

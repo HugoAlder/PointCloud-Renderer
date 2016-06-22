@@ -17,6 +17,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
 
+/**
+ * Class used to take a screenshot of the application.
+ * @author Hugo
+ *
+ */
+
 public class ScreenShot {
 
 	public static BufferedImage getScreenShot(Component component) {

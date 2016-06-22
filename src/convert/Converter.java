@@ -31,13 +31,21 @@ public class Converter {
 
 	private static int size = 4;
 
+	/**
+	 * 
+	 * @param file
+	 * @return true if a new file is created, false if not.
+	 * @throws IOException
+	 * @throws NoSuchAlgorithmException
+	 */
 	public static boolean asciiToBinary(PCDFile file) throws IOException, NoSuchAlgorithmException {
 
 		int bufferSize;
-		short shortValue = new Short((short) 0);
 		float floatValue = new Float(0f);
 		double doubleValue = new Double(0);
 
+		/* First we have to read the header on copy it. */
+		
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String oldName = file.getName();
 		File newFile = new File("res/" + oldName.substring(0, oldName.length() - 4) + "_copy.pcd");
@@ -54,9 +62,6 @@ public class Converter {
 				int dimensions = words.length - 1;
 				String encodingSymbol = "";
 				switch (size) {
-				case 2:
-					encodingSymbol = " 2";
-					break;
 				case 4:
 					encodingSymbol = " 4";
 					break;
@@ -79,6 +84,8 @@ public class Converter {
 		bw.write(s);
 		bw.close();
 
+		/* Then we just have to copy the bytes. */
+		
 		FileOutputStream outputStream = new FileOutputStream(newFile, true);
 
 		String line = "";
@@ -89,12 +96,6 @@ public class Converter {
 			byte[] buffer = new byte[0];
 			for (int i = 0; i < words.length; i++) {
 				switch (size) {
-				case 2:
-					shortValue = Short.parseShort(words[i]);
-					bufferSize = 2;
-					buffer = new byte[bufferSize];
-					ByteBuffer.wrap(buffer, 0, bufferSize).order(ByteOrder.LITTLE_ENDIAN).putShort(shortValue);
-					break;
 				case 4:
 					floatValue = Float.parseFloat(words[i]);
 					bufferSize = 4;

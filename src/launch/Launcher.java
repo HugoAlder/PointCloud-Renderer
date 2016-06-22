@@ -24,6 +24,11 @@ import pcdLoader.Reader;
 
 public class Launcher {
 
+	/**
+	 * Main class of the project.
+	 * @param args
+	 * @throws IOException
+	 */
 	public static void main(String[] args) throws IOException {
 		Finder.setLookAndFeel();
 

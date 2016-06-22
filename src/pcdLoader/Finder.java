@@ -10,6 +10,12 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+/**
+ * Class used to search a PCD file to load.
+ * @author Hugo
+ *
+ */
+
 @SuppressWarnings("serial")
 public class Finder extends JFrame {
 

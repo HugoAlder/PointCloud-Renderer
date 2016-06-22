@@ -94,6 +94,9 @@ public class Viewer implements GLEventListener {
 
 		gl.glPointSize(2.5f);
 		gl.glBegin(GL2.GL_POINTS);
+		
+		/* Each point is draw thanks to the gl object. */
+		
 		for (int i = 0; i < pointCloud.rows(); i++) {
 			if (forcedColor == null) {
 
@@ -143,6 +146,11 @@ public class Viewer implements GLEventListener {
 		glu.gluLookAt(0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 	}
 
+	/**
+	 * 
+	 * @param c
+	 * @return an array of bytes for each RGB component.
+	 */
 	private byte[] colorReader(Color c) {
 		byte[] out = new byte[3];
 		int r = c.getRed();
